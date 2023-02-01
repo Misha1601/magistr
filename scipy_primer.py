@@ -6,7 +6,9 @@ def func(x, a, b, c):
     return a * np.exp(-b * x) + c
 
 xdata = np.linspace(0, 4, 50)
+print(len(xdata))
 y = func(xdata, 2.5, 1.3, 0.5)
+print(y)
 rng = np.random.default_rng()
 y_noise = 0.2 * rng.normal(size=xdata.size)
 ydata = y + y_noise
