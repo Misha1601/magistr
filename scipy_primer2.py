@@ -8,8 +8,6 @@ def c_t(x, p, q, m):
     return (p+(q/m)*(x))*(m-x)
 popt, pcov = curve_fit(c_t, data.cum_sum, data.revenues)
 print(popt)
-print(len(data.week))
-print(len(data.revenues))
 
 plt.plot(data.week, data.revenues, 'b-', label='revenues')
 plt.plot(data.week, c_t(data.week, *popt), 'r-')

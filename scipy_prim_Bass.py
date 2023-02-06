@@ -18,6 +18,10 @@ def residual(vars, t, sales):
     Q = vars[2]
     Bass = M * (((P+Q)**2/P)*np.exp(-(P+Q)*t))/(1+(Q/P)*np.exp(-(P+Q)*t))**2
     return (Bass - (sales))
+salesBass=np.array([residual(vars, t, sales)])
+
+print(sales)
+print(salesBass)
 
 # non linear least square fitting
 varfinal,success = leastsq(residual, vars, args=(t, sales))

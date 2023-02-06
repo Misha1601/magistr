@@ -11,7 +11,7 @@ print(data)
 def c_t(x, p, q, m):
     return (p+(q/m)*(x))*(m-x)
     # return (p*m+(q-p)*(x))-(q/m)*(x**2)
-popt, pcov = curve_fit(c_t, data.cum_sum, data.generate) #, maxfev = 5000)
+popt, pcov = curve_fit(c_t, data.cum_sum[1:23], data.generate[1:23], maxfev = 5000)
 # print(data.cum_sum[0:11])
 # print(data.generate[1:12])
 print(popt)
