@@ -5,7 +5,7 @@ m = 30
 n = 20
 np.random.seed(1)
 A = np.random.randn(m, n)
-# print(len(A))
+# print(A)
 b = np.random.randn(m)
 # print(b)
 
@@ -19,10 +19,10 @@ prob = cp.Problem(objective, constraints)
 # The optimal objective value is returned by `prob.solve()`.
 result = prob.solve()
 # The optimal value for x is stored in `x.value`.
-# print(x.value)
+print(x.value)
 # The optimal Lagrange multiplier for a constraint is stored in
 # `constraint.dual_value`.
 # print(constraints[0].dual_value)
 
-g = (m @ n - 10)
-print(g)
+# g = (m @ n - 10)
+# print(g)
