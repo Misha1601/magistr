@@ -64,9 +64,9 @@ data['bass1'] = data['cum_sum'].apply(lambda x: bass(x, P, Q, M))
 print(data)
 
 # просчитаем прогноз до 2050
-prog = pd.DataFrame({'year' : np.linspace(1995, 2050, 56),
-                     'prog' : list(map(lambda x: bass(x, P, Q, M), np.linspace(1995, 2050, 56)))})
-print(prog)
+# prog = pd.DataFrame({'year' : np.linspace(1995, 2050, 56),
+#                      'prog' : list(map(lambda x: bass(x, P, Q, M), np.linspace(1995, 2050, 56)))})
+# print(prog)
 
 # выведем все графики
 plt.plot(data.year, data.generate, 'b-', label='generate fact')

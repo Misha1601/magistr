@@ -1,0 +1,401 @@
+<model date="17.02.2023" name="test">
+	<record year="1965">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1966">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1967">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1968">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1969">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1970">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1971">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1972">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1973">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1974">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1975">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1976">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1977">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0</data>
+		</param>
+	</record>
+	<record year="1978">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,003</data>
+		</param>
+	</record>
+	<record year="1979">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,006</data>
+		</param>
+	</record>
+	<record year="1980">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,0105</data>
+		</param>
+	</record>
+	<record year="1981">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,0105</data>
+		</param>
+	</record>
+	<record year="1982">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,0185</data>
+		</param>
+	</record>
+	<record year="1983">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,327949494949495</data>
+		</param>
+	</record>
+	<record year="1984">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,0447555555555555</data>
+		</param>
+	</record>
+	<record year="1985">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,064220202020202</data>
+		</param>
+	</record>
+	<record year="1986">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,138831313131313</data>
+		</param>
+	</record>
+	<record year="1987">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,195376767676768</data>
+		</param>
+	</record>
+	<record year="1988">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>0,331579797979798</data>
+		</param>
+	</record>
+	<record year="1989">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>2,64977676767677</data>
+		</param>
+	</record>
+	<record year="1990">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>3,63247051589899</data>
+		</param>
+	</record>
+	<record year="1991">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>4,08670667470707</data>
+		</param>
+	</record>
+	<record year="1992">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>4,73321201915152</data>
+		</param>
+	</record>
+	<record year="1993">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>5,69756881939394</data>
+		</param>
+	</record>
+	<record year="1994">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>7,12292984424242</data>
+		</param>
+	</record>
+	<record year="1995">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>8,26192344363636</data>
+		</param>
+	</record>
+	<record year="1996">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>9,20460066059596</data>
+		</param>
+	</record>
+	<record year="1997">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>12,0178164697778</data>
+		</param>
+	</record>
+	<record year="1998">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>15,921260267805</data>
+		</param>
+	</record>
+	<record year="1999">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>21,2161740066094</data>
+		</param>
+	</record>
+	<record year="2000">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>31,4074350633309</data>
+		</param>
+	</record>
+	<record year="2001">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>38,3814524463421</data>
+		</param>
+	</record>
+	<record year="2002">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>52,3447824859071</data>
+		</param>
+	</record>
+	<record year="2003">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>63,2853958008839</data>
+		</param>
+	</record>
+	<record year="2004">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>85,6261929274732</data>
+		</param>
+	</record>
+	<record year="2005">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>104,644334802537</data>
+		</param>
+	</record>
+	<record year="2006">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>133,498282185794</data>
+		</param>
+	</record>
+	<record year="2007">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>171,506693867357</data>
+		</param>
+	</record>
+	<record year="2008">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>221,411045401997</data>
+		</param>
+	</record>
+	<record year="2009">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>276,792526547077</data>
+		</param>
+	</record>
+	<record year="2010">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>346,424604184064</data>
+		</param>
+	</record>
+	<record year="2011">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>440,383768230808</data>
+		</param>
+	</record>
+	<record year="2012">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>530,496436382213</data>
+		</param>
+	</record>
+	<record year="2013">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>635,505147375046</data>
+		</param>
+	</record>
+	<record year="2014">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>705,853688191986</data>
+		</param>
+	</record>
+	<record year="2015">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>831,343777917725</data>
+		</param>
+	</record>
+	<record year="2016">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>962,101686500868</data>
+		</param>
+	</record>
+	<record year="2017">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>1140,39307285734</data>
+		</param>
+	</record>
+	<record year="2018">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>1269,9792893104</data>
+		</param>
+	</record>
+	<record year="2019">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>1420,54411006394</data>
+		</param>
+	</record>
+	<record year="2020">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>1596,42821153965</data>
+		</param>
+	</record>
+	<record year="2021">
+		<param>
+			<name>Generation wind world</name>
+			<datatype>double</datatype>
+			<data>1861,93982399803</data>
+		</param>
+	</record>
+</model>
