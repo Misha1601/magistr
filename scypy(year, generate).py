@@ -21,6 +21,10 @@ for i in range(len(data.year[0:-1])):
 # print(y)
 # print(len(x))
 # print(len(y))
+data1 = pd.DataFrame({'year': x,
+                     'generate': y})
+data1['cum_sum'] = data1['generate'].cumsum()
+print(data1)
 # Оптимизируя идеальные значения p, q и m, получаем
 def func(x, p, q, m):
 #     return (p+(q/m)*(x))*(m-x)
@@ -28,14 +32,11 @@ def func(x, p, q, m):
 
 plt.plot(x, y, 'b-', label='generation')
 
-popt, pcov = curve_fit(func, x, y, maxfev = 10000)
-plt.plot(x, func(x, *popt), 'r-',
+popt, pcov = curve_fit(func, data1.cum_sum, data1.generate, maxfev = 10000)
+plt.plot(x, func(data1.cum_sum, *popt), 'r-',
 # plt.plot(x, func(x, 0.000572584736024431, 0.249521951557201, 2407.09431915446), 'r-',
          label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
-# print(popt)
-print(round(popt[0],5))
-print(round(popt[1],5))
-print(round(popt[2],5))
+print(*popt)
 
 plt.xlabel('x')
 plt.ylabel('y')
