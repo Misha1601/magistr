@@ -37,13 +37,14 @@ data = pd.DataFrame({'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 20
 # data = pd.DataFrame({'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
 #                      'generate': [0.001, 0.001, 0.003, 0.003, 0.038, 0.0395, 0.0467, 0.0443, 0.0426, 0.0614, 0.086, 0.1394, 0.155, 0.2101, 0.2405, 0.2222, 0.2258, 0.2166, 0.228089, 0.217278, 0.381789, 0.678, 0.795329, 1.33765, 1.55208140494423, 1.90417927964862]})
 data['cum_sum'] = data['generate'].cumsum()
+data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
 
 # описываем функцию, параметры которой необходимо найти
 def bass(x, P, Q, M):
     return (P*M+(Q-P)*(x))-(Q/M)*(x**2)
 
 # находим наши параметры
-popt, pcov = curve_fit(bass, data.cum_sum, data.generate, maxfev = 5000)
+popt, pcov = curve_fit(bass, data.generate[1:], data.Sales[1:], maxfev = 5000)
 print(f'P - {round(popt[0],5)}, Q - {round(popt[1],5)}, M - {round(popt[2],5)}')
 # P - 0.00044, Q - 0.21799, M - 26421.35666
 # При этом если беру всю выборку, то получаю отрицательные значения
@@ -54,7 +55,7 @@ Q = popt[1]
 M = popt[2]
 
 # посчитаем собственно bass с вычисленными P, Q, M
-data['bass1'] = data['cum_sum'].apply(lambda x: bass(x, P, Q, M))
+data['bass1'] = data['generate'].apply(lambda x: bass(x, P, Q, M))
 
 # сделаем кумулятивные данные, с идеальными переменными
 # P = 0.000572585
@@ -69,7 +70,7 @@ print(data)
 # print(prog)
 
 # выведем все графики
-plt.plot(data.year, data.generate, 'b-', label='generate fact')
+plt.plot(data.year, data.Sales, 'b-', label='generate fact')
 # plt.plot(data.year, data.ProgCumul1, 'r-', label='PrognoseCumulative PQM curve_fit')
 # plt.plot(data.year, data.ProgCumul2, 'g--', label='PrognoseCumulativeIdeal PQM Ideal')
 plt.plot(data.year, data.bass1, 'c--', label='bass на P, Q, M вычисленных через curve_fit')
