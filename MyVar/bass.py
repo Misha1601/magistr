@@ -4,16 +4,16 @@ from scipy.optimize import minimize
 from matplotlib import pyplot
 
 # Начальные значения параметров
-p0 = 0.001  # P
-q0 = 0.1  # Q
-m0 = 1000 # M
+p0 = 0.0000006  # P
+q0 = 0.8  # Q
+m0 = 20 # M
 
 finalYear = 2050  # Финальный год
 
-fileIn = 'input1.json'  # Имя входного json-файла
+fileIn = 'inputCIS.json'  # Имя входного json-файла
 fileOut = 'output.json'  # Имя выходного json-файла
 
- 
+
 def prognose(k: tuple, c: float) -> float:
     """
     Функция расчета Prognose Sales
@@ -33,13 +33,13 @@ def goal(k: tuple, *sales) -> float:
     k: кортеж параметров (P, Q, M);
     sales: кортеж Sales.
     """
-    # Начальные значения для первого года 
+    # Начальные значения для первого года
     p0 = 0  # Prognose Sales
     c0 = sales[0]  # Prognose Cumulative
-    
+
     res = 0  # Значение функции
 
-    # Набираем результат функции за годы 
+    # Набираем результат функции за годы
     for i in range(1, len(sales)):
         p = prognose(k, c0)  # Новый Prognose Sales
         c = c0 + p  # Новый Prognose Cumulative
@@ -77,7 +77,7 @@ k = tuple(res.x)  # Получаем кортеж параметров (P, Q, M)
 # Готовим данные для расчета прогнозов
 years2 = [years1[0]]  # Задаем начальный год
 prSales = [0]  # Задаем начальный Prognose Sales
-prCumul = [gens[0]]  # Задаем начальный Prognose Cumulative 
+prCumul = [gens[0]]  # Задаем начальный Prognose Cumulative
 
 # Рассчитываем для всех лет
 while years2[-1] < finalYear:
@@ -92,7 +92,7 @@ dataOut['year'] = years2  # Года
 dataOut['prSales'] = prSales  # Значения Prognose Sales
 dataOut['prCumul'] = prCumul  # Значения Prognose Cumulative
 
-# Записываем выходной json-файл 
+# Записываем выходной json-файл
 with open(fileOut, 'w') as f:
     f.write(json.dumps(dataOut))
 

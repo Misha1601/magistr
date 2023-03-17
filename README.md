@@ -15,3 +15,5 @@ https://pypi.org/project/PuLP/
 Например, вот пример команды для компиляции файла `myscript.py` в dll с иконкой `myicon.ico`:
 pyinstaller --onefile --windowed --noconsole myscript.py
 После того, как вы скомпилируете файл `myscript.py` в dll, вы можете запустить его, используя команду `python myscript.dll`. Вы также можете запустить его из командной строки, используя команду `myicon.exe`.
+
+https://srdas.github.io/MLBook/productForecastingBassModel.html
