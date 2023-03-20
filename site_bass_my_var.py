@@ -51,7 +51,7 @@ print('-------------------------------------')
 
 def c_t(x, m, p, q):
     return (p+(q/m)*(x))*(m-x)
-popt, pcov = curve_fit(c_t, c_sales, sales)
+popt, pcov = curve_fit(c_t, c_sales, sales, bounds=(0, np.inf))
 print(*popt)
 
 def residual(vars, t, sales):
