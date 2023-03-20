@@ -1,5 +1,5 @@
 from BassOLS import *
-model = BassOLS('data.csv')
+model = BassOLS('data2.csv')
 model.fit()
 model.predict()
 model.plot()

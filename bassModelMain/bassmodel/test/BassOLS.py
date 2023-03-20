@@ -39,7 +39,7 @@ class BassOLS(BaseModel):
         try:
             if data[-3:] == "csv":
                 self.data = pd.read_csv(data)
-                # self.data = np.array(self.data)
+                self.data = np.array(self.data)
             elif data[-4:] == "xlsx":
                 self.data = pd.read_excel(data)
                 self.data = np.array(self.data)
@@ -188,7 +188,7 @@ class BassOLS(BaseModel):
         -------
             metrics of the model
         """
-        print(self.result.summarize())
+        # print(self.result.summarize())
         print('=' * 92)
         print('Bass Diffusion Model Summary')
         print('{:<24}{:<10}'.format('Variable', 'Estimation'))

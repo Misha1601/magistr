@@ -3,6 +3,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 class BassPol(BaseModel):
@@ -38,7 +39,9 @@ class BassPol(BaseModel):
             print('Error: No filename. Please input a filename.')
         try:
             if data[-3:] == 'csv':
-                self.data = np.genfromtxt(data, delimiter=',', encoding="utf8")
+                self.data = pd.read_csv(data)
+                # np.seterr(divide='ignore', invalid='ignore')
+                self.data = np.array(self.data)
             elif data[-4:] == 'xlsx':
                 self.data = np.genfromtxt(data, delimiter=',', encoding="utf8")
             else:
