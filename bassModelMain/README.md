@@ -1,7 +1,9 @@
+https://github.com/HripyVoskanyan/bass-model
+
 # Bass-model
 #### Description
 This package was developed by Hripsime Voskanyan for the Marketing Analytics course of American University of Armenia.
-Bass Diffusion Model was initially created by marketing professor Frank Bass. The model is used to 
+Bass Diffusion Model was initially created by marketing professor Frank Bass. The model is used to
 predict new product diffusion patterns. The base model assumes that there are two main factors, which
 decide the diffusion pattern.
 #### Setup
@@ -32,7 +34,7 @@ The package includes four types of visualizations:
 - plot_predict()
 - plot_actual()
 - plot_cdf()
-The methods visualize the predicted and actual sales, as well as 
+The methods visualize the predicted and actual sales, as well as
 the cumulative distribution functions.
 #### Applications
 The Bass Diffusion model can be used to forecast new products'
