@@ -1,28 +1,13 @@
-import cvxpy as cp
 import numpy as np
 
-m = 30
-n = 20
-np.random.seed(1)
-A = np.random.randn(m, n)
-# print(A)
-b = np.random.randn(m)
-# print(b)
+def rss(y_real, y_predicted):
+    squared_residuals = np.square(np.subtract(y_real, y_predicted))
+    return sum(squared_residuals)
 
-# Construct the problem.
-x = cp.Variable(n)
+# создание массива данных, которые ложатся на логарифмическую кривую
+x = np.array([1, 2, 3, 4, 5])
+y_real = np.log(x) + np.random.normal(0, 0.1, size=5)
 
-objective = cp.Minimize(cp.sum_squares(A @ x - b))
-constraints = [0 <= x, x <= 1]
-prob = cp.Problem(objective, constraints)
-
-# The optimal objective value is returned by `prob.solve()`.
-result = prob.solve()
-# The optimal value for x is stored in `x.value`.
-print(x.value)
-# The optimal Lagrange multiplier for a constraint is stored in
-# `constraint.dual_value`.
-# print(constraints[0].dual_value)
-
-# g = (m @ n - 10)
-# print(g)
+# расчет RSS на основе формулы, предсказывающей логарифмическую кривую
+y_predicted = np.log(x)
+print(rss(y_real, y_predicted))
