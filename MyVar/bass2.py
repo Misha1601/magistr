@@ -100,7 +100,7 @@ k0 = [p0, q0, m0]  # Начальные значения параметров
 kb = ((0, None), (0, None), (0, None))  # Все параметры неотрицательные
 
 # Минимизируем сумму квадратов
-res = minimize(squareMistake, k0, args=gens, method='Nelder-Mead', bounds=kb)
+res = minimize(squareMistake, k0, args=gens, method='L-BFGS-B', bounds=kb)
 
 # При неудачной минимизации сообщаем и выходим
 if not res.success:
