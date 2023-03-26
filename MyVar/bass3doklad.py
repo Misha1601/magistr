@@ -16,8 +16,9 @@ data1 = pd.DataFrame({'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2
 
 data_list = [data, data1]
 metod_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'Newton-CG', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
+sqrt_list = []
 
-for k in data_list[:1]:
+for k in data_list:
     data = k
     for n in metod_list:
         data['cum_sum'] = data['generate'].cumsum()
@@ -42,11 +43,13 @@ for k in data_list[:1]:
         # q0 = 0.318
         # m0 = 12
 
+        # print(f'Метод {n}')
+
         # Выводим стартовые коэффициенты
-        print('Стартовые коэффициенты:')
-        print('P0 =', p0)
-        print('Q0 =', q0)
-        print('M0 =', m0)
+        # print('Стартовые коэффициенты:')
+        # print(f'P0 = {p0}, Q0 = {q0}, M0 = {m0}')
+        # print('Q0 =', q0)
+        # print('M0 =', m0)
 
         def squareMistake(k: tuple, *sales) -> float:
             """
@@ -83,13 +86,16 @@ for k in data_list[:1]:
         try:
             res = minimize(squareMistake, k0, args=gens, method=n, bounds=kb)
         except:
-            print(f'Метод {n} выдал ошибку')
+            # print(f'Метод {n} выдал ошибку')
+            # sqrt_list.append(f'{n} - ошибка')
+            continue
         print(res.success)
 
         # При неудачной минимизации сообщаем и выходим
         if not res.success:
-            print('Не удалось минимизировать функцию.')
+            # print('Не удалось минимизировать функцию.')
             # sys.exit()
+            continue
 
         k = tuple(res.x)  # Получаем кортеж параметров (P, Q, M)
 
@@ -105,18 +111,18 @@ for k in data_list[:1]:
             prCumul.append(prCumul[-1]+prSales[-1])  # Prognose Cumulative
 
         # Выводим коэффициенты
-        print('Коэффициенты:')
-        print('P =', k[0])
-        print('Q =', k[1])
-        print('M =', k[2])
+        # print('Коэффициенты:')
+        # print(f' P = {k[0]},  Q = {k[1]},  M = {k[2]}')
+        # print('Q =', k[1])
+        # print('M =', k[2])
 
         # Выводим графики для контроля
-        pyplot.plot(years1, gens, label='Sales fact')  # Исходный
-        pyplot.plot(years2, prCumul, label='Sales Bass')  # Расчитанный
-        pyplot.xlabel('year')  # Заголовок оси Х
-        pyplot.ylabel('generate')  # Заголовок оси Y
-        pyplot.legend()  # Отображаем имена данных
-        pyplot.show()  # Отображаем график
+        # pyplot.plot(years1, gens, label='Sales fact')  # Исходный
+        pyplot.plot(years2, prCumul, label=f'Sales Bass, метод {n}')  # Расчитанный
+        # pyplot.xlabel('year')  # Заголовок оси Х
+        # pyplot.ylabel('generate')  # Заголовок оси Y
+        # pyplot.legend()  # Отображаем имена данных
+        # pyplot.show()  # Отображаем график
 
         # метрика суммы квадратов остатков (Residual Sum of Squares, RSS). Чем меньше значение RSS, тем лучше кривая описывает данные
         def rss(y_real, y_predicted):
@@ -128,5 +134,13 @@ for k in data_list[:1]:
         data['prCumul'] = prCumul[:len(gens)]
         y_real = data['generate']
         y_predicted = data['prCumul']
-        print(f"Сумма квадратов остатков - {rss(y_real, y_predicted)}")
+        # print(f"Сумма квадратов остатков - {rss(y_real, y_predicted)}")
         # print(data)
+        sqrt_list.append(f'{n} {res.success} - {rss(y_real, y_predicted)}')
+
+    print(sqrt_list)
+    pyplot.plot(years1, gens, label='Sales fact')  # Исходный
+    pyplot.xlabel('year')  # Заголовок оси Х
+    pyplot.ylabel('generate')  # Заголовок оси Y
+    pyplot.legend()  # Отображаем имена данных
+    pyplot.show()  # Отображаем график
