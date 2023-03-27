@@ -15,8 +15,14 @@ data1 = pd.DataFrame({'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2
                      'generate': [3.86302920121212, 4.82858524525252, 7.29549295555556, 11.1764791351515, 14.2443217667677, 22.4547142028283, 26.9342866553535, 36.4259493147475, 44.5311522856566, 59.296786859596, 71.0967493651913, 83.1641398783648, 105.713193767021, 121.353901497536, 135.383228613187, 153.443496864175, 186.657403230905, 215.032405064032, 248.115255753321, 264.815019959907, 318.931230019458, 322.867876348302, 384.216521406329, 403.217594774174, 460.029812809329, 510.138071007773]})
 
 data_list = [data, data1]
+data_list_name = ['Мировые', 'Европа']
+excel = [[0.000572651035068692, 0.249510681451613, 2407.35925365984], [0.0026905792193026, 0.165677960101907, 968.861904875132]]
 metod_list = ['Nelder-Mead', 'Powell', 'CG', 'BFGS', 'Newton-CG', 'L-BFGS-B', 'TNC', 'COBYLA', 'SLSQP', 'trust-constr', 'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov']
 sqrt_list = []
+vyvod = []
+signal = True
+r = 0
+ind = 0
 
 for k in data_list:
     data = k
@@ -138,9 +144,59 @@ for k in data_list:
         # print(data)
         sqrt_list.append(f'{n} {res.success} - {rss(y_real, y_predicted)}')
 
-    print(sqrt_list)
-    pyplot.plot(years1, gens, label='Sales fact')  # Исходный
-    pyplot.xlabel('year')  # Заголовок оси Х
-    pyplot.ylabel('generate')  # Заголовок оси Y
-    pyplot.legend()  # Отображаем имена данных
-    pyplot.show()  # Отображаем график
+        # Заносим данные в список для дальнейшего вывода
+        if signal:
+            if len(vyvod) > 0:
+                ind += 1
+                nam = data_list_name[ind]
+            else:
+                nam = data_list_name[ind]
+            vyvod.append([nam])
+            if r > 0:
+                r += 1
+            vyvod[r].append('Вручную')
+            vyvod[r].append('---')
+            vyvod[r].append(excel[ind][0])
+            vyvod[r].append(excel[ind][1])
+            vyvod[r].append(excel[ind][2])
+            b = [Bass(i, excel[ind][0], excel[ind][1], excel[ind][2]) for i in y_real]
+
+            vyvod[r].append(rss(y_real, b))
+            vyvod.append([nam])
+            r += 1
+            vyvod[r].append('curve_fit')
+            vyvod[r].append('---')
+            vyvod[r].append(p0)
+            vyvod[r].append(q0)
+            vyvod[r].append(m0)
+            c = [Bass(i, p0, q0, m0) for i in y_real]
+            vyvod[r].append(rss(y_real, c))
+            vyvod.append([nam])
+            r += 1
+            vyvod[r].append(f'{n}')
+            vyvod[r].append(f'{res.success}')
+            vyvod[r].append(k[0])
+            vyvod[r].append(k[1])
+            vyvod[r].append(k[2])
+            vyvod[r].append(rss(y_real, y_predicted))
+        else:
+            vyvod.append([nam])
+            r += 1
+            vyvod[r].append(f'{n}')
+            vyvod[r].append(f'{res.success}')
+            vyvod[r].append(k[0])
+            vyvod[r].append(k[1])
+            vyvod[r].append(k[2])
+            vyvod[r].append(rss(y_real, y_predicted))
+
+        signal = False
+    signal = True
+
+    # print(sqrt_list)
+    # pyplot.plot(years1, gens, label='Sales fact')  # Исходный
+    # pyplot.xlabel('year')  # Заголовок оси Х
+    # pyplot.ylabel('generate')  # Заголовок оси Y
+    # pyplot.legend()  # Отображаем имена данных
+    # pyplot.show()  # Отображаем график
+for i in vyvod:
+    print(i)
