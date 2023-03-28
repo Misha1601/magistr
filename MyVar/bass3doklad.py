@@ -45,7 +45,7 @@ data7 = pd.DataFrame({'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2
                      'generate': [0.001, 0.001, 0.003, 0.003, 0.038, 0.0395, 0.0467, 0.0443, 0.0426, 0.0614, 0.086, 0.1394, 0.155, 0.2101, 0.2405, 0.2222, 0.2258, 0.2166, 0.228089, 0.217278, 0.381789, 0.678, 0.795329, 1.33765, 1.55208140494423, 1.90417927964862]})
 
 data_list = [data, data1, data2, data3, data4, data5, data6, data7]
-data_list_name = ['Мировые', 'Европа', 'Северная америка', 'Центральная и Южная Америка', 'CIS', 'Африка', 'Asia Pacific', 'Middle East']
+data_list_name = ['Мировые', 'Европа', 'Северная америка', 'Центральная и Южная Америка', 'СНГ', 'Африка', 'Азиатско-Тихоокеанский регион', 'Средний Восток']
 excel = [[0.000572651035068692, 0.249510681451613, 2407.35925365984],
          [0.0026905792193026, 0.165677960101907, 968.861904875132],
          [0, 0.271427278553528, 479.232809347993],
@@ -68,7 +68,7 @@ for k in data_list:
         data['cum_sum'] = data['generate'].cumsum()
         data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
 
-        finalYear = 2025  # Финальный год
+        finalYear = 2020  # Финальный год
 
         def Bass(x, P, Q, M):
             """
@@ -86,8 +86,6 @@ for k in data_list:
         # p0 = 0.0000012
         # q0 = 0.318
         # m0 = 12
-
-        # print(f'Метод {n}')
 
         # Выводим стартовые коэффициенты
         # print('Стартовые коэффициенты:')
@@ -162,7 +160,7 @@ for k in data_list:
 
         # Выводим графики для контроля
         # pyplot.plot(years1, gens, label='Sales fact')  # Исходный
-        pyplot.plot(years2, prCumul, label=f'Sales Bass, метод {n}')  # Расчитанный
+        pyplot.plot(years2, prCumul, label=f'Sales Bass, метод {n} - {res.success}')  # Расчитанный
         # pyplot.xlabel('year')  # Заголовок оси Х
         # pyplot.ylabel('generate')  # Заголовок оси Y
         # pyplot.legend()  # Отображаем имена данных
@@ -248,14 +246,14 @@ for k in data_list:
         signal = False
     signal = True
 
-    # print(sqrt_list)
-    # pyplot.plot(years1, gens, label='Sales fact')  # Исходный
-    # pyplot.xlabel('year')  # Заголовок оси Х
-    # pyplot.ylabel('generate')  # Заголовок оси Y
-    # pyplot.legend()  # Отображаем имена данных
-    # pyplot.show()  # Отображаем график
-# for i in vyvod:
-#     print(i)
+    pyplot.title(f'{nam}')
+    pyplot.plot(years1, gens, label='Sales fact')  # Исходный
+    pyplot.xlabel('year')  # Заголовок оси Х
+    pyplot.ylabel('generate')  # Заголовок оси Y
+    pyplot.legend()  # Отображаем имена данных
+    pyplot.show()  # Отображаем график
+    # print(input(""))
+    # break
 
 columns = ['Генерация', 'Метод', 'Минимизирована', 'P', 'Q', 'M', 'RSS']
 df1 = pd.DataFrame(data=vyvod, columns=columns)
