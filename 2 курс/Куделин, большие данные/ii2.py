@@ -58,6 +58,5 @@ class App(tk.Tk):
         r=8
         self.canvas.create_oval(self.x-r, self.y-r, self.x + r, self.y + r, fill='black')
 
-
 app = App()
 mainloop()
