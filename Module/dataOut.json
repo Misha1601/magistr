@@ -1,0 +1,621 @@
+{
+    "dataset": {
+        "date": "20.10.2023",
+        "start": 1995,
+        "end": 2050,
+        "records": [
+            {
+                "date": 1995,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "8.26192344363636",
+                        "total": "13375.2439634053",
+                        "costs": "0.196"
+                    }
+                ]
+            },
+            {
+                "date": 1996,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "11.68963940113641",
+                        "total": "13789.2495277064",
+                        "costs": "0.178"
+                    }
+                ]
+            },
+            {
+                "date": 1997,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "15.963622317041452",
+                        "total": "14120.5171345097",
+                        "costs": "0.157"
+                    }
+                ]
+            },
+            {
+                "date": 1998,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "21.289394186410103",
+                        "total": "14502.9192434368",
+                        "costs": "0.139"
+                    }
+                ]
+            },
+            {
+                "date": 1999,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "27.92049076655535",
+                        "total": "14917.7637553936",
+                        "costs": "0.134"
+                    }
+                ]
+            },
+            {
+                "date": 2000,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "36.16862229226545",
+                        "total": "15555.5482906317",
+                        "costs": "0.142"
+                    }
+                ]
+            },
+            {
+                "date": 2001,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "46.41539036133727",
+                        "total": "15788.8606107222",
+                        "costs": "0.126"
+                    }
+                ]
+            },
+            {
+                "date": 2002,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "59.1254460478325",
+                        "total": "16345.4843195876",
+                        "costs": "0.119"
+                    }
+                ]
+            },
+            {
+                "date": 2003,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "74.86070694268435",
+                        "total": "16924.0184060025",
+                        "costs": "0.106"
+                    }
+                ]
+            },
+            {
+                "date": 2004,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "94.29482152901325",
+                        "total": "17726.7475122076",
+                        "costs": "0.111"
+                    }
+                ]
+            },
+            {
+                "date": 2005,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "118.22641637840334",
+                        "total": "18454.1188104507",
+                        "costs": "0.104"
+                    }
+                ]
+            },
+            {
+                "date": 2006,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "147.58872026713482",
+                        "total": "19155.2911176488",
+                        "costs": "0.105"
+                    }
+                ]
+            },
+            {
+                "date": 2007,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "183.45188257538203",
+                        "total": "20045.9829957051",
+                        "costs": "0.098"
+                    }
+                ]
+            },
+            {
+                "date": 2008,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "227.01270606128014",
+                        "total": "20421.6373537822",
+                        "costs": "0.088"
+                    }
+                ]
+            },
+            {
+                "date": 2009,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "279.56475037162113",
+                        "total": "20264.8910596484",
+                        "costs": "0.087"
+                    }
+                ]
+            },
+            {
+                "date": 2010,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "342.44024372250334",
+                        "total": "21570.6888619834",
+                        "costs": "0.086"
+                    }
+                ]
+            },
+            {
+                "date": 2011,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "416.91477880250875",
+                        "total": "22256.9952443638",
+                        "costs": "0.083"
+                    }
+                ]
+            },
+            {
+                "date": 2012,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "504.06768589370495",
+                        "total": "22806.2764799403",
+                        "costs": "0.083"
+                    }
+                ]
+            },
+            {
+                "date": 2013,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "604.597016111544",
+                        "total": "23435.2382123808",
+                        "costs": "0.082"
+                    }
+                ]
+            },
+            {
+                "date": 2014,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "718.599867255078",
+                        "total": "24031.7070496167",
+                        "costs": "0.076"
+                    }
+                ]
+            },
+            {
+                "date": 2015,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "845.3466239038162",
+                        "total": "24270.5009409496",
+                        "costs": "0.069"
+                    }
+                ]
+            },
+            {
+                "date": 2016,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "983.0985535227703",
+                        "total": "24915.1871081891",
+                        "costs": "0.066"
+                    }
+                ]
+            },
+            {
+                "date": 2017,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1129.0340830935068",
+                        "total": "25623.8922507836",
+                        "costs": "0.064"
+                    }
+                ]
+            },
+            {
+                "date": 2018,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1279.3475612076977",
+                        "total": "26659.1362380925",
+                        "costs": "0.058"
+                    }
+                ]
+            },
+            {
+                "date": 2019,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1429.554005773456",
+                        "total": "27000.9508509267",
+                        "costs": "0.053"
+                    }
+                ]
+            },
+            {
+                "date": 2020,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1574.9739587271026",
+                        "total": "26823.2483500223",
+                        "costs": "0.05"
+                    }
+                ]
+            },
+            {
+                "date": 2021,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1711.3033021550193"
+                    }
+                ]
+            },
+            {
+                "date": 2022,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1835.128391445526"
+                    }
+                ]
+            },
+            {
+                "date": 2023,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "1944.2566343326926"
+                    }
+                ]
+            },
+            {
+                "date": 2024,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2037.7970029415737"
+                    }
+                ]
+            },
+            {
+                "date": 2025,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2116.0107799257376"
+                    }
+                ]
+            },
+            {
+                "date": 2026,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2180.0166119937044"
+                    }
+                ]
+            },
+            {
+                "date": 2027,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2231.451777941276"
+                    }
+                ]
+            },
+            {
+                "date": 2028,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2272.169594307969"
+                    }
+                ]
+            },
+            {
+                "date": 2029,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2304.014207768884"
+                    }
+                ]
+            },
+            {
+                "date": 2030,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2328.6797157303336"
+                    }
+                ]
+            },
+            {
+                "date": 2031,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2347.640091899946"
+                    }
+                ]
+            },
+            {
+                "date": 2032,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2362.1291836374494"
+                    }
+                ]
+            },
+            {
+                "date": 2033,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2373.1511781883983"
+                    }
+                ]
+            },
+            {
+                "date": 2034,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2381.506568397153"
+                    }
+                ]
+            },
+            {
+                "date": 2035,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2387.82371444397"
+                    }
+                ]
+            },
+            {
+                "date": 2036,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2392.5902242446773"
+                    }
+                ]
+            },
+            {
+                "date": 2037,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2396.1812474647622"
+                    }
+                ]
+            },
+            {
+                "date": 2038,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2398.883563924162"
+                    }
+                ]
+            },
+            {
+                "date": 2039,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2400.9153478309026"
+                    }
+                ]
+            },
+            {
+                "date": 2040,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2402.4419829678636"
+                    }
+                ]
+            },
+            {
+                "date": 2041,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2403.588497915008"
+                    }
+                ]
+            },
+            {
+                "date": 2042,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2404.449221902337"
+                    }
+                ]
+            },
+            {
+                "date": 2043,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2405.0952147343605"
+                    }
+                ]
+            },
+            {
+                "date": 2044,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2405.579946072542"
+                    }
+                ]
+            },
+            {
+                "date": 2045,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2405.9436153788884"
+                    }
+                ]
+            },
+            {
+                "date": 2046,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2406.216426005634"
+                    }
+                ]
+            },
+            {
+                "date": 2047,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2406.421059969797"
+                    }
+                ]
+            },
+            {
+                "date": 2048,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2406.57454481256"
+                    }
+                ]
+            },
+            {
+                "date": 2049,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2406.689659774147"
+                    }
+                ]
+            },
+            {
+                "date": 2050,
+                "fields": [
+                    {
+                        "name": "Generation wind world",
+                        "datatype": "double",
+                        "value": "2406.7759937871147"
+                    }
+                ]
+            }
+        ]
+    }
+}
