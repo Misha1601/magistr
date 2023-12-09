@@ -1,6 +1,5 @@
 import unittest
 import pandas as pd
-import sys
 from Bass1 import Bass1
 from Bass2 import Bass2
 from Bass3 import Bass3
