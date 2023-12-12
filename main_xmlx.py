@@ -7,9 +7,9 @@ from Logic3 import Logic3, squareMistakeLogic3
 from Gompertz1 import Gompertz1, squareMistakeGompertz1
 from Gompertz2 import Gompertz2, squareMistakeGompertz2
 from Gompertz3 import Gompertz3, squareMistakeGompertz3
-from Functions import parser_json
+# from Functions import parser_json
 from Functions import rss
-from Functions import save_json
+# from Functions import save_json
 from Functions import linear_regression_extension
 from Functions import log_error
 
@@ -218,7 +218,8 @@ def main(model_func, data, finalYear):
     data2 = dict(zip(result[n[0]]['years2'], result[n[0]]['prCumul']))
 
     # Сохраняем все в новый json аналогичный оригинальному но с обновленными данными
-    save_json(data2)
+    # save_json(data2)
+    return data2
 
 
 if __name__ == '__main__':
