@@ -1,4 +1,6 @@
 import pandas as pd
+import os.path
+import openpyxl
 
 def read_xlsx_as_rows(file_path):
     try:
@@ -38,7 +40,16 @@ for i in region:
                 # list_str.append([result_df.loc[[n]]['strana'].values, result_df.loc[[n]]['region'].values, result_df.loc[[n]]['energe'].values])
                 print(result_df.loc[[n]].values.tolist()[0][2], result_df.loc[[n]].values.tolist()[0][1],
                 result_df.loc[[n]].values.tolist()[0][0])
-                # break
+                if not os.path.isfile('output_df_xlsx.xlsx'):
+                    wb = openpyxl.Workbook()
+                    wb.save('output_df_xlsx.xlsx')
+                wb = openpyxl.Workbook('output_df_xlsx.xlsx')
+                print(wb.sheetnames)
+                if result_df.loc[[n]].values.tolist()[0][2] not in wb.sheetnames:
+                    wb.create_sheet(title=f'{result_df.loc[[n]].values.tolist()[0][2]}')
+                wb.save('output_df_xlsx.xlsx')
+
+                break
             # break
 # for i in list_str:
 #     print(i)
