@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import os.path
 import openpyxl
@@ -77,11 +78,37 @@ for i in region:
                 for m in result_df.loc[[n]].values.tolist()[0][3:]:
                     sheet.cell(row=indstr, column=b, value=m)
                     b += 1
+
+
+                # Тестируем вставку изображения
+                list1 = unique_tolist[3:]
+                list2 = result_df.loc[[n]].values.tolist()[0][3:]
+                # Находим индекс последнего 0 значения во втором списке
+                # index = len(list2) - list2[::-1].index(0) - 1
+                # Генерируем график
+                plt.figure()
+                plt.plot(list1, list2)
+                plt.xlabel('List 1')
+                plt.ylabel('List 2')
+                plt.title('Graph')
+                # Создаем путь к временному файлу с изображением графика
+                graph_filename = 'graph_temp.png'
+                # Сохраняем график как изображение
+                plt.savefig(graph_filename)
+                plt.close()
+                # Создаем объект изображения
+                img = openpyxl.drawing.image.Image(graph_filename)
+                # Вставляем изображение в указанные координаты
+                # sheet.add_image(img, f'{1}{indstr + 1}')
+                # Удаляем временное изображение
+                # import os
+                # os.remove(graph_filename)
+
                 # Сохраняем и закрываем книгу
                 wb.save('output_df_xlsx.xlsx')
                 wb.close()
 
-                # break
+                break
             break
 
 
