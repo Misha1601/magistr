@@ -49,8 +49,8 @@ for i in region:
             # print(indices)
             # перебираем все индексы
             for n in indices:
-                # print(result_df.loc[[n]].values.tolist()[0][2], result_df.loc[[n]].values.tolist()[0][1],
-                # result_df.loc[[n]].values.tolist()[0][0])
+                print(result_df.loc[[n]].values.tolist()[0][2], result_df.loc[[n]].values.tolist()[0][1],
+                result_df.loc[[n]].values.tolist()[0][0])
                 # проверяем наличие файла, если его нету, создаем иначе открываем
                 if not os.path.isfile('output_df_xlsx.xlsx'):
                     wb = openpyxl.Workbook()
@@ -99,7 +99,7 @@ for i in region:
                 except BaseException:
                     print("Не получилось узнать индекс")
 
-                print(index)
+                # print(index)
                 # Генерируем график 1
                 plt.figure()
                 plt.plot(list1, list2)
