@@ -51,26 +51,26 @@ for i in region:
                     sheet = wb[f'{result_df.loc[[n]].values.tolist()[0][2]}']
                     sheet.cell(row=1, column=1, value=f'{result_df.loc[[n]].values.tolist()[0][2]}')
                     sheet.cell(row=1, column=2, value=f'{result_df.loc[[n]].values.tolist()[0][1]}')
+                    sheet.cell(row=indstr, column=1, value='Год')
+                    b = 2
+                    for m in unique_tolist[3:]:
+                        sheet.cell(row=indstr, column=b, value=m)
+                        b += 1
                 sheet = wb[f'{result_df.loc[[n]].values.tolist()[0][2]}']
+                indstr += 1
                 sheet.cell(row=indstr, column=1, value=f'{result_df.loc[[n]].values.tolist()[0][0]}')
-                indstr += 1
-                sheet.cell(row=indstr, column=1, value='Год')
-                b = 2
-                for m in unique_tolist[3:]:
-                    sheet.cell(row=indstr, column=b, value=m)
-                    b += 1
-                indstr += 1
-                sheet.cell(row=indstr, column=1, value='Генерация')
+                # indstr += 1
+                # sheet.cell(row=indstr, column=1, value='Генерация')
                 b = 2
                 for m in result_df.loc[[n]].values.tolist()[0][3:]:
                     sheet.cell(row=indstr, column=b, value=m)
                     b += 1
-                indstr += 1
+                # indstr += 1
                 wb.save('output_df_xlsx.xlsx')
                 wb.close()
 
                 # break
-            break
+            # break
 # for i in list_str:
 #     print(i)
 # my_str = result_df.loc[result_df['energe'] == 'WindGeneration-TWh'].values.tolist()
