@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 import os.path
 import openpyxl
 
@@ -16,6 +17,10 @@ def read_xlsx_as_rows(file_path):
 # Конвертируем эксель в датафрэйм
 file_path = 'output_myvar.xlsx'
 result_df = read_xlsx_as_rows(file_path)
+
+# удаляем результирующий файл, если он есть
+if os.path.isfile('output_df_xlsx.xlsx'):
+    os.remove('output_df_xlsx.xlsx')
 
 # ВЫбираем уникальные значения из столбцов
 strana = result_df['strana'].unique()
@@ -78,37 +83,68 @@ for i in region:
                 for m in result_df.loc[[n]].values.tolist()[0][3:]:
                     sheet.cell(row=indstr, column=b, value=m)
                     b += 1
+                # переходим к следующей строке
+                indstr += 1
 
 
                 # Тестируем вставку изображения
                 list1 = unique_tolist[3:]
                 list2 = result_df.loc[[n]].values.tolist()[0][3:]
                 # Находим индекс последнего 0 значения во втором списке
-                # index = len(list2) - list2[::-1].index(0) - 1
-                # Генерируем график
+                try:
+                    index = 0
+                    for idx, value in enumerate(list2, start=1):
+                        if value == 0:
+                            index = idx
+                except BaseException:
+                    print("Не получилось узнать индекс")
+
+                print(index)
+                # Генерируем график 1
                 plt.figure()
                 plt.plot(list1, list2)
-                plt.xlabel('List 1')
-                plt.ylabel('List 2')
-                plt.title('Graph')
+                plt.xlabel('Год')
+                plt.ylabel('Генерация')
+                plt.title(f'{result_df.loc[[n]].values.tolist()[0][0]}')
                 # Создаем путь к временному файлу с изображением графика
-                graph_filename = 'graph_temp.png'
+                graph_filename = 'graph_temp1.png'
                 # Сохраняем график как изображение
-                plt.savefig(graph_filename)
+                plt.savefig(graph_filename, dpi=70)  # dpi - точек на дюйм
                 plt.close()
+                # Генерируем график 2
+                plt.figure()
+                plt.plot(list1[index:], list2[index:])
+                plt.xlabel('Год')
+                plt.ylabel('Генерация')
+                plt.title(f'{result_df.loc[[n]].values.tolist()[0][0]} без учета 0 показателей')
+                # Создаем путь к временному файлу с изображением графика
+                graph_filename2 = 'graph_temp2.png'
+                # Сохраняем график как изображение
+                plt.savefig(graph_filename2, dpi=70)  # dpi - точек на дюйм
+                plt.close()
+
                 # Создаем объект изображения
                 img = openpyxl.drawing.image.Image(graph_filename)
-                # Вставляем изображение в указанные координаты
-                # sheet.add_image(img, f'{1}{indstr + 1}')
-                # Удаляем временное изображение
-                # import os
-                # os.remove(graph_filename)
+                img2 = openpyxl.drawing.image.Image(graph_filename2)
+                # Вставляем изображение 1 в указанные координаты
+                cell = sheet.cell(row=indstr, column=1)
+                cell.coordinate
+                sheet.add_image(img, cell.coordinate)
+                # Вставляем изображение 2 в указанные координаты
+                cell = sheet.cell(row=indstr, column=8)
+                cell.coordinate
+                sheet.add_image(img2, cell.coordinate)
+
+                indstr += 16
 
                 # Сохраняем и закрываем книгу
                 wb.save('output_df_xlsx.xlsx')
                 wb.close()
+                # Удаляем временное изображение
+                os.remove(graph_filename)
+                os.remove(graph_filename2)
 
-                break
-            break
+                # break
+            # break
 
 
