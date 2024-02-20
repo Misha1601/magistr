@@ -1,0 +1,6 @@
+https://hub.exponenta.ru/post/postanovka-zadachi-optimizatsii-i-chislennye-metody-ee-resheniya356#1
+https://github.com/search?q=Hooke%20%E2%80%94%20Jeeves&type=repositories
+https://github.com/hpceen/optimization/blob/master/main.py
+https://github.com/ivanmrsulja/direct-search-optimisation-sim/blob/master/methods.py
+https://github.com/vladikopl01/Hooke-Jeeves-Method/blob/main/methods.py
+https://habr.com/ru/articles/332092/
