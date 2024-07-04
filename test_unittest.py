@@ -41,6 +41,15 @@ class TestBass1Function(unittest.TestCase):
         result = Bass1(x, P, Q, M)
         self.assertAlmostEqual(result, expected_result, places=2)
 
+    def test_squareMistakeBass1(self):
+        # Параметры для теста
+        k = [0.0005727, 0.249517965, 2407.09678]
+        # Ожидаемый результат
+        expected_result = 4722.498315
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeBass1(k, sales)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
     def test_Bass2(self):
         # Параметры для теста
         x = [14502.9192434368, 20.3462795784015]
@@ -51,6 +60,15 @@ class TestBass1Function(unittest.TestCase):
         expected_result = 6.302953179
         # Вызываем функцию и проверяем результат
         result = Bass2(x, P, Q, M)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
+    def test_squareMistakeBass2(self):
+        # Параметры для теста
+        k = [0.000820214, 0.263879857, 0.087482053]
+        # Ожидаемый результат
+        expected_result = 4048.370363
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeBass2(k, sales, total)
         self.assertAlmostEqual(result, expected_result, places=2)
 
     def test_Bass3(self):
@@ -65,6 +83,15 @@ class TestBass1Function(unittest.TestCase):
         result = Bass3(x, P, Q, K)
         self.assertAlmostEqual(result, expected_result, places=2)
 
+    def test_squareMistakeBass3(self):
+        # Параметры для теста
+        k = [0.0, 0.315550089618395, 0.00508027974311906]
+        # Ожидаемый результат
+        expected_result = 2586.297671
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeBass3(k, sales, total, costs)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
     def test_Logic1(self):
         # Параметры для теста
         x = 8.26192344363636, 4
@@ -75,6 +102,15 @@ class TestBass1Function(unittest.TestCase):
         expected_result = 34.59646254
         # Вызываем функцию и проверяем результат
         result = Logic1(x, B, C, M)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
+    def test_squareMistakeLogic1(self):
+        # Параметры для теста
+        k = [0.241884653890683, 22.7134364527308, 2460.53700033328]
+        # Ожидаемый результат
+        expected_result = 6103.38713320634
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeLogic1(k, sales)
         self.assertAlmostEqual(result, expected_result, places=2)
 
     def test_Logic2(self):
@@ -89,6 +125,15 @@ class TestBass1Function(unittest.TestCase):
         result = Logic2(x, B, C, M)
         self.assertAlmostEqual(result, expected_result, places=2)
 
+    def test_squareMistakeLogic2(self):
+        # Параметры для теста
+        k = [0.226659184207978, 21.3760215248117, 0.0833694625461306]
+        # Ожидаемый результат
+        expected_result = 5138.36154948632
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeLogic2(k, sales, total)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
     def test_Logic3(self):
         # Параметры для теста
         x = (8.26192344363636, 4, 14502.9192434368, 0.139)
@@ -99,6 +144,15 @@ class TestBass1Function(unittest.TestCase):
         expected_result = 19.68073397
         # Вызываем функцию и проверяем результат
         result = Logic3(x, B, C, M)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
+    def test_squareMistakeLogic3(self):
+        # Параметры для теста
+        k = [0.286694795, 16.01392386, 0.003629756]
+        # Ожидаемый результат
+        expected_result = 6743.699883
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeLogic3(k, sales, total, costs)
         self.assertAlmostEqual(result, expected_result, places=2)
 
     def test_Gompertz1(self):
@@ -113,6 +167,15 @@ class TestBass1Function(unittest.TestCase):
         result = Gompertz1(x, B, C, M)
         self.assertAlmostEqual(result, expected_result, places=2)
 
+    def test_squareMistakeGompertz1(self):
+        # Параметры для теста
+        k = [2.14963557345369, 0.0675892079091823, 7713.56270310079]
+        # Ожидаемый результат
+        expected_result = 2488.69694313136
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeGompertz1(k, sales)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
     def test_Gompertz2(self):
         # Параметры для теста
         x = (8.26192344363636, 4, 14502.9192434368)
@@ -125,6 +188,15 @@ class TestBass1Function(unittest.TestCase):
         result = Gompertz2(x, B, C, M)
         self.assertAlmostEqual(result, expected_result, places=2)
 
+    def test_squareMistakeGompertz2(self):
+        # Параметры для теста
+        k = [2.015515438, 0.077025958, 0.174912703]
+        # Ожидаемый результат
+        expected_result = 3654.402894
+        # Вызываем функцию и проверяем результат
+        result = squareMistakeGompertz2(k, sales, total)
+        self.assertAlmostEqual(result, expected_result, places=2)
+
     def test_Gompertz3(self):
         # Параметры для теста
         x = (8.26192344363636, 4, 14502.9192434368, 0.139)
@@ -135,78 +207,6 @@ class TestBass1Function(unittest.TestCase):
         expected_result = 9.980983742
         # Вызываем функцию и проверяем результат
         result = Gompertz3(x, B, C, M)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeBass1(self):
-        # Параметры для теста
-        k = [0.0005727, 0.249517965, 2407.09678]
-        # Ожидаемый результат
-        expected_result = 4722.498315
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeBass1(k, sales)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeBass2(self):
-        # Параметры для теста
-        k = [0.000820214, 0.263879857, 0.087482053]
-        # Ожидаемый результат
-        expected_result = 4048.370363
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeBass2(k, sales, total)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeBass3(self):
-        # Параметры для теста
-        k = [0.0, 0.315550089618395, 0.00508027974311906]
-        # Ожидаемый результат
-        expected_result = 2586.297671
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeBass3(k, sales, total, costs)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeLogic1(self):
-        # Параметры для теста
-        k = [0.241884653890683, 22.7134364527308, 2460.53700033328]
-        # Ожидаемый результат
-        expected_result = 6103.38713320634
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeLogic1(k, sales)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeLogic2(self):
-        # Параметры для теста
-        k = [0.226659184207978, 21.3760215248117, 0.0833694625461306]
-        # Ожидаемый результат
-        expected_result = 5138.36154948632
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeLogic2(k, sales, total)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeLogic3(self):
-        # Параметры для теста
-        k = [0.286694795, 16.01392386, 0.003629756]
-        # Ожидаемый результат
-        expected_result = 6743.699883
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeLogic3(k, sales, total, costs)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeGompertz1(self):
-        # Параметры для теста
-        k = [2.14963557345369, 0.0675892079091823, 7713.56270310079]
-        # Ожидаемый результат
-        expected_result = 2488.69694313136
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeGompertz1(k, sales)
-        self.assertAlmostEqual(result, expected_result, places=2)
-
-    def test_squareMistakeGompertz2(self):
-        # Параметры для теста
-        k = [2.015515438, 0.077025958, 0.174912703]
-        # Ожидаемый результат
-        expected_result = 3654.402894
-        # Вызываем функцию и проверяем результат
-        result = squareMistakeGompertz2(k, sales, total)
         self.assertAlmostEqual(result, expected_result, places=2)
 
     def test_squareMistakeGompertz3(self):
