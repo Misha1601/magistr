@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Сумма чисел</title>
+</head>
+<body>
+    <h1>Введите четыре числа</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Вычислить сумму</button>
+    </form>
+    {% if result is not None %}
+        <h2>Результат: {{ result }}</h2>
+        <p><a href="{% url 'result' %}">Посмотреть результат на новой странице</a></p>
+    {% endif %}
+</body>
+</html>
