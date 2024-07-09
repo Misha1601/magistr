@@ -1,4 +1,4 @@
-def Bass1(x, P, Q, M):
+def Bass1(x: float, P: float, Q: float, M: float) -> float:
     """
     Функция расчета Prognose Sales с 1 переменной
     x: предыдущий прогноз, где y0 первое фактическое сгенерированное
@@ -22,7 +22,7 @@ def squareMistakeBass1(k: tuple, sales) -> float:
         res += (c - sales[i])**2  # Добавляем
     return res
 
-def Bass2(x, P, Q, K):
+def Bass2(x, P, Q, K) -> float:
     """
     Функция расчета Prognose Sales с 2 переменными
     y = Y(t-1) сумма предыдущих прогнозов, где y0 первое фактическое сгенерированное
@@ -32,7 +32,7 @@ def Bass2(x, P, Q, K):
     y = x[1]
     return (P * m * K + (Q - P) * y - (Q / (m * K) * y ** 2))
 
-def squareMistakeBass2(k: tuple, sales, total1) -> float:
+def squareMistakeBass2(k: tuple, sales, total) -> float:
     """
     Функция для минимизации через scipy.
     Рассчитывает сумму квадратов разностей значений
@@ -44,13 +44,13 @@ def squareMistakeBass2(k: tuple, sales, total1) -> float:
     res = 0  # Значение функции
     # Набираем результат функции за годы
     for i in range(1, len(sales)):
-        z = total1[i-1], c
+        z = total[i-1], c
         p = Bass2(z, k[0], k[1], k[2])  # Новый Prognose Sales
         c = c + p  # Новый Prognose Cumulative
         res += (c - sales[i])**2  # Добавляем
     return res
 
-def Bass3(x, P, Q, K):
+def Bass3(x, P, Q, K) -> float:
     """
     Функция расчета Prognose Sales с 3 переменными
     y = Y(t-1) сумма предыдущих прогнозов, где y0 первое фактическое сгенерированное
@@ -82,7 +82,7 @@ def squareMistakeBass3(k: tuple, sales, total, costs) -> float:
 
 import numpy as np
 
-def Logic1(x, B, C, M):
+def Logic1(x, B, C, M) -> float:
     """
     Функция расчета Prognose Sales с 1 переменной
     n: величина Prognose Cumulative за прошлый год.
@@ -109,7 +109,7 @@ def squareMistakeLogic1(k: tuple, sales) -> float:
 
 import numpy as np
 
-def Logic2(x, B, C, M):
+def Logic2(x, B, C, M) -> float:
     """
     Функция расчета Prognose Sales с 2 переменными
     n: величина Prognose Cumulative за прошлый год.
@@ -120,7 +120,7 @@ def Logic2(x, B, C, M):
     k = x[2]
     return data0 + (M * k) * (1/(1+np.exp(-B * (n - C))))
 
-def squareMistakeLogic2(k: tuple, sales, total1) -> float:
+def squareMistakeLogic2(k: tuple, sales, total) -> float:
         """
         Функция для минимизации через scipy.
         Рассчитывает сумму квадратов разностей значений
@@ -132,14 +132,14 @@ def squareMistakeLogic2(k: tuple, sales, total1) -> float:
         res = 0  # Значение функции
         # Набираем результат функции за годы
         for i in range(1, len(sales)):
-            z = sales[0], i, total1[i-1]
+            z = sales[0], i, total[i-1]
             p = Logic2(z, k[0], k[1], k[2])  # Новый Prognose Sales
             res += (p - sales[i])**2  # Добавляем
         return res
 
 import numpy as np
 
-def Logic3(x, B, C, M):
+def Logic3(x, B, C, M) -> float:
     """
     Функция расчета Prognose Sales с 3 переменными
     n: величина Prognose Cumulative за прошлый год.
@@ -171,7 +171,7 @@ def squareMistakeLogic3(k: tuple, sales, total, costs) -> float:
 
 import numpy as np
 
-def Gompertz1(x, B, C, M):
+def Gompertz1(x, B, C, M) -> float:
         """
         Функция расчета Prognose Sales
         x: величина Prognose Cumulative за прошлый год.
@@ -198,7 +198,7 @@ def squareMistakeGompertz1(k: tuple, sales) -> float:
 
 import numpy as np
 
-def Gompertz2(x, B, C, M):
+def Gompertz2(x, B, C, M) -> float:
     """
     Функция расчета Prognose Sales с 2 переменными
     n: величина Prognose Cumulative за прошлый год.
@@ -209,7 +209,7 @@ def Gompertz2(x, B, C, M):
     k = x[2]
     return data0 + (M * k) * (np.exp(-np.exp(B - C * n)))
 
-def squareMistakeGompertz2(k: tuple, sales, total1) -> float:
+def squareMistakeGompertz2(k: tuple, sales, total) -> float:
         """
         Функция для минимизации через scipy.
         Рассчитывает сумму квадратов разностей значений
@@ -221,14 +221,14 @@ def squareMistakeGompertz2(k: tuple, sales, total1) -> float:
         res = 0  # Значение функции
         # Набираем результат функции за годы
         for i in range(1, len(sales)):
-            z = sales[0], i, total1[i-1]
+            z = sales[0], i, total[i-1]
             p = Gompertz2(z, k[0], k[1], k[2])  # Новый Prognose Sales
             res += (p - sales[i])**2  # Добавляем
         return res
 
 import numpy as np
 
-def Gompertz3(x, B, C, M):
+def Gompertz3(x, B, C, M) -> float:
     """
     Функция расчета Prognose Sales с 3 переменными
     n: величина Prognose Cumulative за прошлый год.

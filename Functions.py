@@ -174,7 +174,8 @@ def main():
     # print(np.concatenate([data_total, extended_array]))
     # log_error('error.txt', "что то пошло не так")
     # log_error('error.txt', "дописал в файл")
-    parser_xmlx('Prognose_Request.xlsx')
+    # parser_xmlx('Prognose_Request.xlsx')
+    parser_json()
 
 if __name__ == '__main__':
     main()
