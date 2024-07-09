@@ -1,12 +1,4 @@
-from Bass1 import Bass1, squareMistakeBass1
-from Bass2 import Bass2, squareMistakeBass2
-from Bass3 import Bass3, squareMistakeBass3
-from Logic1 import Logic1, squareMistakeLogic1
-from Logic2 import Logic2, squareMistakeLogic2
-from Logic3 import Logic3, squareMistakeLogic3
-from Gompertz1 import Gompertz1, squareMistakeGompertz1
-from Gompertz2 import Gompertz2, squareMistakeGompertz2
-from Gompertz3 import Gompertz3, squareMistakeGompertz3
+from Models_diffusion_innovations import *
 # from Functions import parser_json
 from Functions import rss
 # from Functions import save_json
