@@ -266,7 +266,7 @@ def func_dif_innov(my_data: dict, finalYear: int, model_func: list, metod: str =
     Принимает data - словарь с данными, пример ниже, finalYear - конечный год для предсказания, формат int, model_func - модель диффузии, metod - метод минимизации, str, один из предложенных ниже].
     data должен содержать ключи {'year':...,'generate':...,'total':...,'costs':...}
     metod = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
-    Возвращает список значений диффузии и параметры.
+    Возвращает список значений диффузии, год и параметры.
     """
     # определяем DataFrame
     data = pd.DataFrame({'year':my_data['year'],
