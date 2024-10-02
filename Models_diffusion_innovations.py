@@ -261,7 +261,7 @@ def squareMistakeGompertz3(k: tuple, sales, total, costs) -> float:
         res += (p - sales[i])**2  # Добавляем
     return res
 
-def func_dif_innov(my_data: dict, finalYear: int, model_func: list, metod: str = 'Nelder-Mead'):
+def func_dif_innov(my_data: dict, finalYear: int, model_func, metod: str = 'Nelder-Mead'):
     """Функция диффузии иновации.
     Принимает data - словарь с данными, пример ниже, finalYear - конечный год для предсказания, формат int, model_func - модель диффузии, metod - метод минимизации, str, один из предложенных ниже].
     data должен содержать ключи {'year':...,'generate':...,'total':...,'costs':...}
