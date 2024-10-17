@@ -1,6 +1,7 @@
 from pprint import pprint
 import pandas as pd
 import numpy as np
+import sqlite3
 import time
 from scipy.optimize import minimize
 from scipy.optimize import curve_fit
@@ -261,7 +262,28 @@ def squareMistakeGompertz3(k: tuple, sales, total, costs) -> float:
         res += (p - sales[i])**2  # Добавляем
     return res
 
-def func_dif_innov(my_data: dict, finalYear: int, model_func, metod: str = 'Nelder-Mead'):
+def execute_sql_query(sql_query):
+    """
+    Выполняет SQL-запрос к базе данных SQLite и возвращает результат в виде pd.DataFrame.
+    :param sql_query: SQL-запрос для выполнения.
+    :return: Список с результатами запроса.
+    """
+    try:
+        # Подключение к базе данных SQLite
+        conn = sqlite3.connect('Wind.db')
+        cursor = conn.cursor()
+        # Выполнение SQL-запроса
+        cursor.execute(sql_query)
+        # Получение результатов запроса
+        results = cursor.fetchall()
+        # Закрытие соединения с базой данных
+        conn.close()
+        return results
+    except Exception as e:
+        print(f"Ошибка при выполнении запроса: {e}")
+        return None
+
+def func_dif_innov(my_data: dict, country, finalYear: int, model_func, metod: str = 'Nelder-Mead'):
     """Функция диффузии иновации.
     Принимает data - словарь с данными, пример ниже, finalYear - конечный год для предсказания, формат int, model_func - модель диффузии, metod - метод минимизации, str, один из предложенных ниже].
     data должен содержать ключи {'year':...,'generate':...,'total':...,'costs':...}
@@ -275,6 +297,7 @@ def func_dif_innov(my_data: dict, finalYear: int, model_func, metod: str = 'Neld
                          'costs':my_data['costs']})
     data['cum_sum'] = data['generate'].cumsum()
     data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
+    data['data0'] = data['generate'][0]
 
     # Поиск приближенных параметров
     try:
@@ -418,13 +441,51 @@ if __name__ == '__main__':
     'generate': [8.26192344363636, 9.20460066059596, 12.0178164697778, 15.921260267805, 21.2161740066094, 31.420434564131, 38.3904519471421, 52.3307819867071, 62.9113953016839, 85.1161924282732, 104.083879757882, 132.859216030029, 170.682620580279, 220.600045153997, 276.020526299077, 346.465021938078, 440.385091980306, 530.55442135112, 635.49205101167, 705.805860788812, 831.42968828187, 962.227395409379, 1140.31094904253, 1269.52053571083, 1418.17004626655, 1591.2135122193],
     'total':[13375.2439634053, 13789.2495277064, 14120.5171345097, 14502.9192434368, 14917.7637553936, 15555.5482906317, 15788.8606107222, 16345.4843195876, 16924.0184060025, 17726.7475122076, 18454.1188104507, 19155.2911176488, 20045.9829957051, 20421.6373537822, 20264.8910596484, 21570.6888619834, 22256.9952443638, 22806.2764799403, 23435.2382123808, 24031.7070496167, 24270.5009409496, 24915.1871081891, 25623.8922507836, 26659.1362380925, 27000.9508509267, 26823.2483500223],
     'costs':[0.196, 0.178, 0.157, 0.139, 0.134, 0.142, 0.126, 0.119, 0.106, 0.111, 0.104, 0.105, 0.098, 0.088, 0.087, 0.086, 0.083, 0.083, 0.082, 0.076, 0.069, 0.066, 0.064, 0.058, 0.053, 0.05]}
-    country  = ''
+
+    select_all_region = f'SELECT DISTINCT "Region" FROM Wind'
+    # print(select_all_region)
+    data_all_region = [column[0] for column in execute_sql_query(select_all_region)]
+    # print(data_all_region)
+
+    select_all_country = f'SELECT DISTINCT "Country" FROM Wind'
+    # print(select_all_country)
+    data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
+    # print(data_all_country)
+
+    country  = 'Total World'
+    select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
+    # print(select_country)
+    data_country = execute_sql_query(select_country)[0]
+    # print(data_country)
+
+    select_year = f"PRAGMA table_info(Wind)"
+    data_year = [column[1] for column in execute_sql_query(select_year)]
+    # print(data_year)
+
+    select_total = f'SELECT * FROM Wind WHERE Country="Total"'
+    # print(select_total)
+    data_total = execute_sql_query(select_total)[0]
+    # print(data_total)
+
+    select_costs = f'SELECT * FROM Wind WHERE Country="Costs"'
+    # print(select_costs)
+    data_costs = execute_sql_query(select_costs)[0]
+    # print(data_costs[2:])
+
+    country  = 'Total World'
     finalYear = 2025
+    models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]
     model = Bass1
     metod = 'Nelder-Mead'
 
-    result = func_dif_innov(data, finalYear, model, metod)
-    print(result[0])
+    data2 = {'year': [int(i) for i in data_year[2:]],
+            'generate': data_country[2:],
+            'total': data_total[2:],
+            'costs': data_costs[2:]}
+    # print(data2)
+
+    result = func_dif_innov(data, country, finalYear, models[8], metod)
+    print(result)
 
     end_time2 = time.time()
     total_time2 = end_time2 - start_time2

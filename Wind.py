@@ -11,7 +11,7 @@ def xlsx_to_sqlite(file_path):
     conn = sqlite3.connect('Wind.db')
 
     # Запись DataFrame в базу данных SQLite
-    df.to_sql('data', conn, if_exists='replace', index=False)
+    df.to_sql('Wind', conn, if_exists='replace', index=False)
 
     # Закрытие соединения с базой данных
     conn.close()
