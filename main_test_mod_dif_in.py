@@ -32,6 +32,9 @@ def main():
     workbook.close()
     data = pd.DataFrame({'year': year, 'generate': generate, 'total': total, 'costs': costs})
     # print(data.year)
+    data['cum_sum'] = data['generate'].cumsum()
+    data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
+    data['data0'] = data['generate'][0]
 
 
     pyplot.plot(data.year, data.generate, label='Sales fact')  # Исходный
@@ -47,7 +50,7 @@ def main():
 
     finalYear = list(data.year)[-1] + numberP
     # print(data)
-    result = func_dif_innov(data, finalYear, Bass1)
+    result = func_dif_innov(data, finalYear, Bass1, 'Nelder-Mead')
     results = {}
     results[f'result{finalYear}'] = result[0]
     pyplot.plot(result[1], result[0], label=f'result{finalYear}')
@@ -56,7 +59,7 @@ def main():
         data1 = data[:-numberS]
         finalYear = list(data1.year)[-1] + numberP
         # print(list(data1.year)[-1], finalYear)
-        result = func_dif_innov(data1, finalYear, Bass1)
+        result = func_dif_innov(data1, finalYear, Bass1, 'Nelder-Mead')
         if result:
             results[f'result{finalYear}'] = result[0]
             pyplot.plot(result[1], result[0], label=f'result{finalYear}')

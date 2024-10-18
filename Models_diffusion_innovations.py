@@ -283,30 +283,15 @@ def execute_sql_query(sql_query):
         print(f"Ошибка при выполнении запроса: {e}")
         return None
 
-def func_dif_innov(country, finalYear: int, model_func, metod: str):
+def func_dif_innov(data, finalYear: int, model_func, metod: str):
     """Функция диффузии иновации.
-    Принимает data - словарь с данными, пример ниже,
+    Принимает
+    data - готовый pd.DataFrame
     finalYear - конечный год для предсказания, формат int,
     model_func - модель диффузии,
     metod = один из методов минимизации, формат str,
     Возвращает список значений диффузии, год и параметры.
     """
-
-    select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
-    # print(select_country)
-    data_country = execute_sql_query(select_country)[0]
-    # print(data_country)
-
-
-    # определяем DataFrame
-    data = pd.DataFrame(data_generate)
-    data['generate'] = data_country[2:]
-    # data = pd.DataFrame(data_generate_test) # для теста закоментировать два предыдущих, это раскоментировать
-    data['cum_sum'] = data['generate'].cumsum()
-    data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
-    data['data0'] = data['generate'][0]
-
-    # print(data)
 
     # Поиск приближенных параметров
     try:
@@ -476,16 +461,32 @@ if __name__ == '__main__':
     # print(data_costs[2:])
 
     country  = 'Total World'
+    select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
+    # print(select_country)
+    data_country = execute_sql_query(select_country)[0]
+    # print(data_country)
+
     finalYear = 2025
     models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]
     metods = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
 
     data_generate = {'year': [int(i) for i in data_year[2:]],
+                     'generate': data_country[2:],
                      'total': data_total[2:],
                      'costs': data_costs[2:]}
 
+    # определяем DataFrame
+    data = pd.DataFrame(data_generate)
+    # data = pd.DataFrame(data_generate_test) # для теста закоментировать два предыдущих, это раскоментировать
+    data['cum_sum'] = data['generate'].cumsum()
+    data['Sales'] = [0]+[data['generate'][i+1]-data['generate'][i] for i in range(data.shape[0]-1)]
+    data['data0'] = data['generate'][0]
+
+
+
+
     for i in models:
-        result = func_dif_innov(country, finalYear, i, metods[0])
+        result = func_dif_innov(data, finalYear, i, metods[0])
         print(f'Модель {i.__name__} - {result[2]}')
         # for i in result:
         #     print(i)
