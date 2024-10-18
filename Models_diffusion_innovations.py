@@ -1,4 +1,5 @@
 from pprint import pprint
+from matplotlib import pyplot
 import pandas as pd
 import numpy as np
 import sqlite3
@@ -428,6 +429,48 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
     else:
         return prSales, years0, k
 
+def func_minus_year(data, numberP, numberS, model, metod, country):
+    """Функция func_minus_year используется для построения графика продаж данных для конкретной страны и модели за определенное количество лет.
+    Данные выводятся для исходного количества лет, а затем функция прогнозирует продажи на дополнительные годы с шагом, указанным пользователем.
+    Прогнозируемые данные затем выводятся на том же графике.
+    Параметры:
+    data: (pandas DataFrame) Данные продаж для конкретной страны и модели.
+    numberP: (int) Количество лет, на которое прогнозируется.
+    numberS: (int) Шаг, по которому прогнозируются данные продаж.
+    model: (str) Название модели, используемой для прогнозирования.
+    metod: (str) Название метода, используемого для прогнозирования.
+    country: (str) Название страны, для которой выводятся данные.
+    Функция не возвращает значение. Она отображает график продаж данных и прогнозируемых данных на том же графике.
+    """
+    pyplot.plot(data.year, data.generate, label='Sales fact', color='black', linewidth=1, zorder=3)  # Исходный график
+    # на сколько лет вперед предсказываем
+    # numberP = 5
+    # какой шаг используем по годам
+    numberStep = numberS
+    finalYear = list(data.year)[-1] + numberP
+    # print(data)
+    result = func_dif_innov(data, finalYear, model, metod)
+    results = {}
+    results[f'result{finalYear}'] = result[0]
+    pyplot.plot(result[1], result[0], label=f'result{finalYear}')
+    while True:
+        data1 = data[:-numberStep]
+        print(list(data1.year)[-1])
+        finalYear = list(data1.year)[-1] + numberP
+        # print(list(data1.year)[-1], finalYear)
+        result = func_dif_innov(data1, finalYear, model, metod)
+        if result:
+            results[f'result{finalYear}'] = result[0]
+            pyplot.plot(result[1], result[0], label=f'result{finalYear}')
+        else:
+            break
+        numberStep += numberS
+        print(numberStep)
+    # print(results)
+
+    pyplot.title(f'Данные для {country}, модель {model.__name__}, шаг измерения - {numberS}, предсказывает на {numberP} лет')
+    pyplot.legend()  # Отображаем имена данных
+    pyplot.show()  # Отображаем график
 
 if __name__ == '__main__':
     start_time2 = time.time()
@@ -460,7 +503,8 @@ if __name__ == '__main__':
     data_costs = execute_sql_query(select_costs)[0]
     # print(data_costs[2:])
 
-    country  = 'Total World'
+    country  = 'China'
+    # country  = 'Total World'
     select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
     # print(select_country)
     data_country = execute_sql_query(select_country)[0]
@@ -485,11 +529,14 @@ if __name__ == '__main__':
 
 
 
-    for i in models:
-        result = func_dif_innov(data, finalYear, i, metods[0])
-        print(f'Модель {i.__name__} - {result[2]}')
+    # for i in models:
+    #     result = func_dif_innov(data, finalYear, i, metods[0])
+    #     print(f'Модель {i.__name__} - {result[2]}')
         # for i in result:
         #     print(i)
+
+    func_minus_year(data, 5, 2, models[0], metods[0], country)
+
 
     end_time2 = time.time()
     total_time2 = end_time2 - start_time2
