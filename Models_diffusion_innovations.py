@@ -263,7 +263,7 @@ def squareMistakeGompertz3(k: tuple, sales, total, costs) -> float:
         res += (p - sales[i])**2  # Добавляем
     return res
 
-def execute_sql_query(sql_query):
+def execute_sql_query(sql_query, params=None):
     """
     Выполняет SQL-запрос к базе данных SQLite и возвращает результат в виде pd.DataFrame.
     :param sql_query: SQL-запрос для выполнения.
@@ -274,12 +274,22 @@ def execute_sql_query(sql_query):
         conn = sqlite3.connect('Wind.db')
         cursor = conn.cursor()
         # Выполнение SQL-запроса
-        cursor.execute(sql_query)
-        # Получение результатов запроса
-        results = cursor.fetchall()
-        # Закрытие соединения с базой данных
-        conn.close()
-        return results
+        if params:
+            cursor.execute(sql_query, params)
+        else:
+            cursor.execute(sql_query)
+
+        # Проверка типа запроса
+        if any(keyword in sql_query.upper() for keyword in ['INSERT', 'UPDATE', 'DELETE']):
+            # Если это запрос на изменение данных, сохраняем изменения
+            conn.commit()
+            conn.close()
+        else:
+            # Если это запрос на выборку данных, получаем результаты
+            results = cursor.fetchall()
+            # Закрытие соединения с базой данных
+            conn.close()
+            return results
     except Exception as e:
         print(f"Ошибка при выполнении запроса: {e}")
         return None
@@ -291,7 +301,7 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
     finalYear - конечный год для предсказания, формат int,
     model_func - модель диффузии,
     metod = один из методов минимизации, формат str,
-    Возвращает список значений диффузии, год и параметры.
+    Возвращает список значений диффузии, список лет, параметры.
     """
 
     # Поиск приближенных параметров
@@ -324,16 +334,16 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
                 z = np.array([np.array(data.data0[1:]), np.array(data.index.values[1:]), np.array(data.total[0:-1]), np.array(data.costs[0:-1])])
                 popt, pcov = curve_fit(Gompertz3, z, data.generate[1:], bounds=(0, np.inf), method='trf', maxfev = 10000)
     except ValueError:
-        log_error('error_curve_fit.txt', f'Для {model_func.__name__}, данные содержат NaN или используются несовместимые параметры!')
+        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, данные содержат NaN или используются несовместимые параметры!')
         return None
     except RuntimeError:
-        log_error('error_curve_fit.txt', f'Для {model_func.__name__}, минимизация по методу наименьших квадратов не удалась!')
+        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, минимизация по методу наименьших квадратов не удалась!')
         return None
     except OptimizeWarning:
-        log_error('error_curve_fit.txt', f'Для {model_func.__name__}, ковариацию параметров невозможно оценить!')
+        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, ковариацию параметров невозможно оценить!')
         return None
     # Создаем цикл и выполняем минимизацию для каждого из методов
-    k0 = [popt[0], popt[1], popt[2]]  # Начальные значения параметров
+    k0 = (popt[0], popt[1], popt[2])  # Начальные значения параметров
     kb = ((0, None), (0, None), (0, None))  # Все параметры неотрицательные
 
 
@@ -425,11 +435,11 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
                 ind_tgen += 1  # Увеличиваем порядковый номер
 
     if model_func.__name__ in ['Bass1', 'Bass2', 'Bass3']:
-        return prCumul, years0, k
+        return prCumul, years0, k, k0
     else:
-        return prSales, years0, k
+        return prSales, years0, k, k0
 
-def func_minus_year(data, numberP, numberS, model, metod, country):
+def func_minus_year(country, numberP, numberS, model, metod):
     """Функция func_minus_year используется для построения графика продаж данных для конкретной страны и модели за определенное количество лет.
     Данные выводятся для исходного количества лет, а затем функция прогнозирует продажи на дополнительные годы с шагом, указанным пользователем.
     Прогнозируемые данные затем выводятся на том же графике.
@@ -442,52 +452,7 @@ def func_minus_year(data, numberP, numberS, model, metod, country):
     country: (str) Название страны, для которой выводятся данные.
     Функция не возвращает значение. Она отображает график продаж данных и прогнозируемых данных на том же графике.
     """
-    pyplot.plot(data.year, data.generate, label='Sales fact', color='black', linewidth=1, zorder=3)  # Исходный график
-    # на сколько лет вперед предсказываем
-    # numberP = 5
-    # какой шаг используем по годам
-    numberStep = numberS
-    finalYear = list(data.year)[-1] + numberP
-    # print(data)
-    result = func_dif_innov(data, finalYear, model, metod)
-    results = {}
-    results[f'result{finalYear}'] = result[0]
-    pyplot.plot(result[1], result[0], label=f'result{finalYear}')
-    while True:
-        data1 = data[:-numberStep]
-        print(list(data1.year)[-1])
-        finalYear = list(data1.year)[-1] + numberP
-        # print(list(data1.year)[-1], finalYear)
-        result = func_dif_innov(data1, finalYear, model, metod)
-        if result:
-            results[f'result{finalYear}'] = result[0]
-            pyplot.plot(result[1], result[0], label=f'result{finalYear}')
-        else:
-            break
-        numberStep += numberS
-        print(numberStep)
-    # print(results)
 
-    pyplot.title(f'Данные для {country}, модель {model.__name__}, шаг измерения - {numberS}, предсказывает на {numberP} лет')
-    pyplot.legend()  # Отображаем имена данных
-    pyplot.show()  # Отображаем график
-
-if __name__ == '__main__':
-    start_time2 = time.time()
-    data_generate_test = {'year': [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
-    'generate': [8.26192344363636, 9.20460066059596, 12.0178164697778, 15.921260267805, 21.2161740066094, 31.420434564131, 38.3904519471421, 52.3307819867071, 62.9113953016839, 85.1161924282732, 104.083879757882, 132.859216030029, 170.682620580279, 220.600045153997, 276.020526299077, 346.465021938078, 440.385091980306, 530.55442135112, 635.49205101167, 705.805860788812, 831.42968828187, 962.227395409379, 1140.31094904253, 1269.52053571083, 1418.17004626655, 1591.2135122193],
-    'total':[13375.2439634053, 13789.2495277064, 14120.5171345097, 14502.9192434368, 14917.7637553936, 15555.5482906317, 15788.8606107222, 16345.4843195876, 16924.0184060025, 17726.7475122076, 18454.1188104507, 19155.2911176488, 20045.9829957051, 20421.6373537822, 20264.8910596484, 21570.6888619834, 22256.9952443638, 22806.2764799403, 23435.2382123808, 24031.7070496167, 24270.5009409496, 24915.1871081891, 25623.8922507836, 26659.1362380925, 27000.9508509267, 26823.2483500223],
-    'costs':[0.196, 0.178, 0.157, 0.139, 0.134, 0.142, 0.126, 0.119, 0.106, 0.111, 0.104, 0.105, 0.098, 0.088, 0.087, 0.086, 0.083, 0.083, 0.082, 0.076, 0.069, 0.066, 0.064, 0.058, 0.053, 0.05]}
-
-    select_all_region = f'SELECT DISTINCT "Region" FROM Wind'
-    # print(select_all_region)
-    data_all_region = [column[0] for column in execute_sql_query(select_all_region)]
-    # print(data_all_region)
-
-    select_all_country = f'SELECT DISTINCT "Country" FROM Wind'
-    # print(select_all_country)
-    data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
-    # print(data_all_country)
 
     select_year = f"PRAGMA table_info(Wind)"
     data_year = [column[1] for column in execute_sql_query(select_year)]
@@ -503,16 +468,12 @@ if __name__ == '__main__':
     data_costs = execute_sql_query(select_costs)[0]
     # print(data_costs[2:])
 
-    country  = 'China'
+    country = country
     # country  = 'Total World'
     select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
     # print(select_country)
     data_country = execute_sql_query(select_country)[0]
     # print(data_country)
-
-    finalYear = 2025
-    models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]
-    metods = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
 
     data_generate = {'year': [int(i) for i in data_year[2:]],
                      'generate': data_country[2:],
@@ -527,15 +488,100 @@ if __name__ == '__main__':
     data['data0'] = data['generate'][0]
 
 
+    # подготовим информацию для вставки в БД
+    columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+    line = [country, str(numberP), str(numberS), model.__name__, metod]
 
 
-    # for i in models:
-    #     result = func_dif_innov(data, finalYear, i, metods[0])
-    #     print(f'Модель {i.__name__} - {result[2]}')
-        # for i in result:
-        #     print(i)
 
-    func_minus_year(data, 5, 2, models[0], metods[0], country)
+    # pyplot.plot(data.year, data.generate, label='Sales fact', color='black', linewidth=1, zorder=3)  # Исходный график
+        # шаг используемый по годам
+    numberStep = numberS
+    # данные с предсказанием на указанный год
+    finalYear = list(data.year)[-1] + numberP
+    # print(data)
+    result1 = func_dif_innov(data, finalYear, model, metod)
+    if result1 == None:
+        return None
+    line.append(result1[-2])
+    line.append(result1[-1])
+    columns += result1[1]
+    line += result1[0]
+    columns_str = ', '.join(f"'{col}'" for col in columns)
+    placeholders = ', '.join(f"'{i}'" for i in line)
+    insert1 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
+    execute_sql_query(insert1)
+    if numberS == 0:
+        return None
+    # print(len(columns1))
+    # print(len(line1))
+    # акумулируем результаты
+    results = {}
+    results[f'result{finalYear}'] = result1[0]
+    # results[country]['year'] = data.year
+    # results[country]['generate'] = data.generate
+    # pyplot.plot(result1[1], result1[0], label=f'result{finalYear}')
+    # данные без предсказаний
+    # result0 = func_dif_innov(data, list(data.year)[-1], model, metod)
+    while True:
+        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+        line = [country, numberP, numberS, model.__name__, metod]
+        data1 = data[:-numberStep]
+        # print(list(data1.year)[-1])
+        finalYear = list(data1.year)[-1] + numberP
+        # print(list(data1.year)[-1], finalYear)
+        result2 = func_dif_innov(data1, finalYear, model, metod)
+        if result2:
+            line.append(result2[-2])
+            line.append(result2[-1])
+            columns += result2[1]
+            line += result2[0]
+            columns_str = ', '.join(f"'{col}'" for col in columns)
+            placeholders = ', '.join(f"'{i}'" for i in line)
+            insert2 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
+            execute_sql_query(insert2)
+
+            # pyplot.plot(result2[1], result2[0], label=f'result{finalYear}')
+        else:
+            break
+        numberStep += numberS
+        # print(numberStep)
+    # pprint(results)
+
+    # pyplot.title(f'Данные для {country}, модель {model.__name__}, шаг измерения - {numberS}, предсказывает на {numberP} лет')
+    # pyplot.legend()  # Отображаем имена данных
+    # pyplot.show()  # Отображаем график
+
+if __name__ == '__main__':
+    start_time2 = time.time()
+
+    select_all_region = f'SELECT DISTINCT "Region" FROM Wind '
+    data_all_region = [column[0] for column in execute_sql_query(select_all_region)]
+
+    select_all_country = f'SELECT DISTINCT "Country" FROM Wind WHERE "Region" != "-"'
+    data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
+    # print(data_all_country)
+
+    finalYear = 2025
+    models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]
+    metods = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
+
+
+    execute_sql_query('DELETE FROM results;')
+    z = 0
+    for i in data_all_country:
+        for k in range(5, 0, -1):
+            # for l in models:
+                # for m in metods:
+                    print(z, i, k, 0, models[0].__name__, metods[0])
+                    func_minus_year(i, k, 0, models[0], metods[0])
+                    z += 1
+                    # pass
+
+
+
+
+    # func_minus_year('Total North America', 2, 0, models[0], metods[0])
 
 
     end_time2 = time.time()
