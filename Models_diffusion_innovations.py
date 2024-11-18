@@ -527,6 +527,8 @@ def func_minus_year(country, numberP, numberS, model, metod):
         columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
         line = [country, numberP, numberS, model.__name__, metod]
         data1 = data[:-numberStep]
+        if list(data1.year)[-1] <= 2001:
+            break
         # print(list(data1.year)[-1])
         finalYear = list(data1.year)[-1] + numberP
         # print(list(data1.year)[-1], finalYear)
