@@ -570,13 +570,13 @@ if __name__ == '__main__':
 
 
     execute_sql_query('DELETE FROM results;')
-    z = 0
+    z = 1
     for i in data_all_country:
         for k in range(5, 0, -1):
-            # for l in models:
+            for l in models:
                 # for m in metods:
-                    print(z, i, k, 0, models[0].__name__, metods[0])
-                    func_minus_year(i, k, 0, models[0], metods[0])
+                    print(z, i, k, 5, l.__name__, metods[0])
+                    func_minus_year(i, k, 5, l, metods[0])
                     z += 1
                     # pass
 
