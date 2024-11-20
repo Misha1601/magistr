@@ -1,5 +1,6 @@
 from pprint import pprint
 from matplotlib import pyplot
+import json
 import pandas as pd
 import numpy as np
 import sqlite3
@@ -554,6 +555,73 @@ def func_minus_year(country, numberP, numberS, model, metod):
     # pyplot.legend()  # Отображаем имена данных
     # pyplot.show()  # Отображаем график
 
+def analyze_data(country, prognos, step, model, metod):
+    """Функция для анализа данных"""
+    # Извлечение данных
+    conn = sqlite3.connect('Wind.db')
+    query = f"SELECT * FROM Wind WHERE Country = ?"
+    wind_data = pd.read_sql_query(query, conn, params=[country])
+    query_p = f"SELECT * FROM results WHERE country = ? AND prognos = ? AND step = ? AND model = ? AND metod = ?"
+    results_data = pd.read_sql_query(query_p, conn, params=[country, prognos, step, model, metod])
+    conn.close()
+
+    # Фильтруем столбцы, которые являются годами
+    filtered_columns_wind = [col for col in wind_data.columns if col.isdigit() and len(col) == 4]
+
+    # Обрезаем DataFrame до столбцов, которые являются годами
+    # Оригинальные данные до предсказания
+    original_data_wind = wind_data[filtered_columns_wind].astype(float)
+    original_year = [int(i) for i in filtered_columns_wind]
+    original_values = [i for i in original_data_wind.values[0]]
+    len_original_values = len(original_values)
+    result_dict = {}
+    result_dict[country] = {}
+    result_dict[country][prognos] = {}
+    result_dict[country][prognos][step] = {}
+    result_dict[country][prognos][step][model] = {}
+    result_dict[country][prognos][step][model][metod] = {}
+    result_dict[country][prognos][step][model][metod]['origen'] = original_year, original_values
+
+    # Анализ данных
+    for index, row in results_data.iterrows():
+        year_end = int(row.last_valid_index())
+        year_start = year_end - prognos
+
+        # Создаем новый DataFrame из строки
+        new_df = row.to_frame().T
+
+        if year_end > int(filtered_columns_wind[-1]):
+            # print(year_end)
+            predicted_data = new_df[filtered_columns_wind].astype(float)
+            year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
+            year_full_int = [int(i) for i in year_full]
+            predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
+            # Среднеквадратичное отклонение (RMSE)
+            rmse = np.sqrt(np.mean((np.array(original_data_wind) - np.array(predicted_data))**2))
+            # Средняя абсолютная ошибка (MAE)
+            mae = np.mean(np.abs(np.array(original_data_wind) - np.array(predicted_data)))
+            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+        else:
+            predicted_data = new_df[filtered_columns_wind].astype(float)
+            year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
+            year_full_int = [int(i) for i in year_full]
+            predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
+            len_predicted_values = len(predicted_values)
+            if len_original_values >= len_predicted_values:
+                new_original_values = original_values[:len_predicted_values]
+                new_predicted_values = predicted_values
+            else:
+                new_predicted_values = predicted_values[:len_original_values]
+                new_original_values = original_values
+            y_true = np.array(new_original_values)
+            y_pred = np.array(new_predicted_values)
+
+            # Среднеквадратичное отклонение (RMSE)
+            rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+            # Средняя абсолютная ошибка (MAE)
+            mae = np.mean(np.abs(y_true - y_pred))
+            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+    return result_dict
 if __name__ == '__main__':
     start_time2 = time.time()
 
@@ -564,22 +632,41 @@ if __name__ == '__main__':
     data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
     # print(data_all_country)
 
-    finalYear = 2025
+    # finalYear = 2025
     models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]
     metods = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
 
 
-    execute_sql_query('DELETE FROM results;')
+    # execute_sql_query('DELETE FROM results;')
     z = 1
-    for i in data_all_country:
-        for k in range(5, 0, -1):
-            for l in models:
+    # for i in data_all_country:
+    #     for k in range(5, 0, -1):
+    #         for l in models:
                 # for m in metods:
-                    print(z, i, k, 5, l.__name__, metods[0])
-                    func_minus_year(i, k, 5, l, metods[0])
-                    z += 1
+                    # print(z, i, k, 5, l.__name__, metods[0])
+                    # func_minus_year(i, k, 5, l, metods[0])
+                    # z += 1
                     # pass
+    result_dict = {}
+    for i in data_all_country:
+        for l in models:
+            print(z, i, 5, 5, l.__name__, metods[0])
+            result_dict.update(analyze_data(i, 5, 5, l.__name__, metods[0]))
+            z += 1
 
+    # Сохранение словаря в файл JSON
+    with open('result_dict.json', 'w') as json_file:
+        json.dump(result_dict, json_file, indent=4)
+
+    print("Словарь успешно сохранен в файл JSON.")
+
+    # Создание DataFrame из словаря
+    df11 = pd.DataFrame(result_dict)
+
+    # Сохранение DataFrame в файл Excel
+    df11.to_excel('result_dict.xlsx', index=False)
+
+    print("Словарь успешно сохранен в файл Excel.")
 
 
 

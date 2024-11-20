@@ -1,55 +1,119 @@
-import numpy as np
+import sqlite3
 import pandas as pd
-from scipy.optimize import minimize
-import time
-import warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
+import numpy as np
+import matplotlib.pyplot as plt
 
-start_time = time.time()
+# Функция для анализа данных
+def analyze_data(country, prognos, step, model, metod):
+    """Функция для анализа данных"""
+    # Извлечение данных
+    conn = sqlite3.connect('Wind.db')
+    query = f"SELECT * FROM Wind WHERE Country = ?"
+    wind_data = pd.read_sql_query(query, conn, params=[country])
+    query_p = f"SELECT * FROM results WHERE country = ? AND prognos = ? AND step = ? AND model = ? AND metod = ?"
+    results_data = pd.read_sql_query(query_p, conn, params=[country, prognos, step, model, metod])
+    conn.close()
 
-def Bass1(x, P, Q, M):
-    return (P*M+(Q-P)*(x))-(Q/M)*(x**2)
+    # Фильтруем столбцы, которые являются годами
+    filtered_columns_wind = [col for col in wind_data.columns if col.isdigit() and len(col) == 4]
 
-def squareMistake1(k: tuple, *sales) -> float:
-    p0 = 0
-    c0 = sales[0]
-    res = 0  # Значение функции
-    for i in range(1, len(sales)):
-        p = Bass1(c0, P=k[0], Q=k[1], M=k[2])
-        c = c0 + p
-        res += (c - sales[i])**2
-        p0 = p
-        c0 = c
-    return res
+    # Обрезаем DataFrame до столбцов, которые являются годами
+    # Оригинальные данные до предсказания
+    original_data_wind = wind_data[filtered_columns_wind].astype(float)
+    original_year = [int(i) for i in filtered_columns_wind]
+    original_values = [i for i in original_data_wind.values[0]]
+    len_original_values = len(original_values)
+    # print(original_values)
+
+    result_dict = {}
+    result_dict[country] = {}
+    result_dict[country]['origen'] = original_year, original_values
+
+    # Анализ данных
+    for index, row in results_data.iterrows():
+        year_end = int(row.last_valid_index())
+        year_start = year_end - prognos
+
+        # Создаем новый DataFrame из строки
+        new_df = row.to_frame().T
+        # print(new_df)
+
+        if year_end > int(filtered_columns_wind[-1]):
+            # print(year_end)
+            predicted_data = new_df[filtered_columns_wind].astype(float)
+            year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
+            year_full_int = [int(i) for i in year_full]
+            predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
+            # Среднеквадратичное отклонение (RMSE)
+            rmse = np.sqrt(np.mean((np.array(original_data_wind) - np.array(predicted_data))**2))
+            # Средняя абсолютная ошибка (MAE)
+            mae = np.mean(np.abs(np.array(original_data_wind) - np.array(predicted_data)))
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+        else:
+            predicted_data = new_df[filtered_columns_wind].astype(float)
+            year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
+            year_full_int = [int(i) for i in year_full]
+            predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
+            len_predicted_values = len(predicted_values)
+            if len_original_values >= len_predicted_values:
+                new_original_values = original_values[:len_predicted_values]
+                new_predicted_values = predicted_values
+            else:
+                new_predicted_values = predicted_values[:len_original_values]
+                new_original_values = original_values
+            # print(len(new_original_values))
+            # print(len(new_predicted_values))
+            y_true = np.array(new_original_values)
+            y_pred = np.array(new_predicted_values)
+
+            # Среднеквадратичное отклонение (RMSE)
+            rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+            # Средняя абсолютная ошибка (MAE)
+            mae = np.mean(np.abs(y_true - y_pred))
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+    return result_dict
 
 
-# Готовим данные для минимизации
-# Начальные значения параметров
-k0 = (0.0008791696672306727, 0.19252826585535315, 3328.9193848309856)
-# Все параметры неотрицательные
-kb = ((0, None), (0, None), (0, None))
 
-# тот набор данных который необходим, идеальные значения, большое время исполнения
-# generate = tuple([8.26192344363636, 9.20460066059596, 12.0178164697778, 15.921260267805, 21.2161740066094, 31.420434564131, 38.3904519471421, 52.3307819867071, 62.9113953016839, 85.1161924282732, 104.083879757882, 132.859216030029, 170.682620580279, 220.600045153997, 276.020526299077, 346.465021938078, 440.385091980306, 530.55442135112, 635.49205101167, 705.805860788812, 831.42968828187, 962.227395409379, 1140.31094904253, 1269.52053571083, 1418.17004626655, 1591.2135122193])
-# аналогичный набор данных, значения не устраивают, малое время исполнения
-generate = np.array([8.26192344363636, 9.20460066059596, 12.0178164697778, 15.921260267805, 21.2161740066094, 31.420434564131, 38.3904519471421, 52.3307819867071, 62.9113953016839, 85.1161924282732, 104.083879757882, 132.859216030029, 170.682620580279, 220.600045153997, 276.020526299077, 346.465021938078, 440.385091980306, 530.55442135112, 635.49205101167, 705.805860788812, 831.42968828187, 962.227395409379, 1140.31094904253, 1269.52053571083, 1418.17004626655, 1591.2135122193])
-# data = pd.DataFrame({'generate': [8.26192344363636, 9.20460066059596, 12.0178164697778, 15.921260267805, 21.2161740066094, 31.420434564131, 38.3904519471421, 52.3307819867071, 62.9113953016839, 85.1161924282732, 104.083879757882, 132.859216030029, 170.682620580279, 220.600045153997, 276.020526299077, 346.465021938078, 440.385091980306, 530.55442135112, 635.49205101167, 705.805860788812, 831.42968828187, 962.227395409379, 1140.31094904253, 1269.52053571083, 1418.17004626655, 1591.2135122193]})
-# generate = data.generate
-# print(generate)
+def export_tables_to_excel(db_name):
+    # Подключение к базе данных
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
 
-# список методов используемый в минимизации
-metod_list = ['Nelder-Mead', 'Powell', 'L-BFGS-B', 'TNC', 'SLSQP', 'trust-constr']
+    # Получение списка таблиц в базе данных
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
 
-for i in metod_list:
-    # Минимизируем сумму квадратов
-    try:
-        res = minimize(squareMistake1, k0, args=generate, method=i, bounds=kb)
-    except:
-        print(f'Минимизация методом {i} не удалась!')
-    k = tuple(res.x)  # Получаем кортеж параметров
-    print(f'k = {k}')
+    # Перебор каждой таблицы и сохранение в файл Excel
+    for table in tables:
+        table_name = table[0]
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, conn)
+        df = df.astype(float)
+        df.to_excel(f"{table_name}.xlsx", index=False)
+        print(f"Таблица {table_name} успешно экспортирована в {table_name}.xlsx")
 
-end_time = time.time()
-total_time = end_time - start_time
-print(f'Время выполнения: {total_time} seconds')
+    # Закрытие соединения
+    conn.close()
+
+if __name__ == '__main__':
+    # Пример использования функции
+    strana = analyze_data('Canada', 5, 5, 'Bass1', 'Nelder-Mead')
+    print(strana)
+
+    # export_tables_to_excel('Wind.db')
+
+    plt.figure(figsize=(10, 6))
+    for i in strana['Canada'].keys():
+        if i == 'origen':
+            plt.plot(strana['Canada'][i][0], strana['Canada'][i][1], label=f'Оригинальные данные')
+        else:
+            # print(i)
+            plt.plot(strana['Canada'][i][0], strana['Canada'][i][1], label=f"Предсказанные данные до {i}, {strana['Canada'][i][2]}, {strana['Canada'][i][3]}")
+    plt.xlabel('Год')
+    plt.ylabel('Значение')
+    plt.title(f'Сравнение данных')
+    plt.legend(loc='upper right', bbox_to_anchor=(0.65, 1.15))
+    # Настройка ориентации меток на оси X
+    plt.xticks(rotation=90)
+    plt.show()
