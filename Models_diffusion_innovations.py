@@ -596,11 +596,25 @@ def analyze_data(country, prognos, step, model, metod):
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            # Среднеквадратичное отклонение (RMSE)
-            rmse = np.sqrt(np.mean((np.array(original_data_wind) - np.array(predicted_data))**2))
-            # Средняя абсолютная ошибка (MAE)
-            mae = np.mean(np.abs(np.array(original_data_wind) - np.array(predicted_data)))
-            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+            if len(original_values) >= len(predicted_values):
+                # Среднеквадратичное отклонение (RMSE)
+                rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values))**2))
+                # Средняя абсолютная ошибка (MAE)
+                mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values)))
+                # Метрика суммы квадратов остатков, Результат должен быть наименьшим.
+                squared = np.square(np.subtract(original_values[:len(predicted_values)], predicted_values))
+                # print(squared)
+            else:
+                # Среднеквадратичное отклонение (RMSE)
+                # print(original_values)
+                # print(predicted_values[:len(predicted_values)])
+                rmse = np.sqrt(np.mean((np.array(original_values) - np.array(predicted_values[:len(original_values)]))**2))
+                # Средняя абсолютная ошибка (MAE)
+                mae = np.mean(np.abs(np.array(original_values) - np.array(predicted_values[:len(original_values)])))
+                # Метрика суммы квадратов остатков, Результат должен быть наименьшим.
+                squared = np.square(np.subtract(original_values, predicted_values[:len(original_values)]))
+                # print(squared)
+            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae, sum(squared)
         else:
             predicted_data = new_df[filtered_columns_wind].astype(float)
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
@@ -620,7 +634,9 @@ def analyze_data(country, prognos, step, model, metod):
             rmse = np.sqrt(np.mean((y_true - y_pred)**2))
             # Средняя абсолютная ошибка (MAE)
             mae = np.mean(np.abs(y_true - y_pred))
-            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+            # Метрика суммы квадратов остатков, Результат должен быть наименьшим.
+            squared = np.square(np.subtract(y_true, y_pred))
+            result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae, sum(squared)
     return result_dict
 if __name__ == '__main__':
     start_time2 = time.time()
@@ -648,25 +664,27 @@ if __name__ == '__main__':
                     # z += 1
                     # pass
     result_dict = {}
+    result_list = []
     for i in data_all_country:
         for l in models:
             print(z, i, 5, 5, l.__name__, metods[0])
-            result_dict.update(analyze_data(i, 5, 5, l.__name__, metods[0]))
+            my_dict = analyze_data(i, 5, 5, l.__name__, metods[0])
+            # with open('result_dict.json', 'a') as json_file:
+            #     json.dump(my_dict, json_file, indent=4)
+            for n in my_dict[i][5][5][l.__name__][metods[0]].keys():
+                if n != 'origen':
+                    result_list1 = [i, 5, 5, l.__name__, metods[0], n, my_dict[i][5][5][l.__name__][metods[0]][n][2], my_dict[i][5][5][l.__name__][metods[0]][n][3], my_dict[i][5][5][l.__name__][metods[0]][n][4]]
+                    result_list.append(result_list1)
             z += 1
 
-    # Сохранение словаря в файл JSON
-    with open('result_dict.json', 'w') as json_file:
-        json.dump(result_dict, json_file, indent=4)
+    # Создаем DataFrame
+    df = pd.DataFrame(result_list, columns=['country','prog', 'step', 'model', 'metod', 'year', 'rmse', 'mae', 'sum'])
+    # Записываем в Excel
+    df.to_excel('result_list.xlsx', index=False)
 
-    print("Словарь успешно сохранен в файл JSON.")
+    # for i in result_list:
+    #     print(i)
 
-    # Создание DataFrame из словаря
-    df11 = pd.DataFrame(result_dict)
-
-    # Сохранение DataFrame в файл Excel
-    df11.to_excel('result_dict.xlsx', index=False)
-
-    print("Словарь успешно сохранен в файл Excel.")
 
 
 
