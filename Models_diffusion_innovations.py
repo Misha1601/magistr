@@ -335,13 +335,13 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
                 z = np.array([np.array(data.data0[1:]), np.array(data.index.values[1:]), np.array(data.total[0:-1]), np.array(data.costs[0:-1])])
                 popt, pcov = curve_fit(Gompertz3, z, data.generate[1:], bounds=(0, np.inf), method='trf', maxfev = 10000)
     except ValueError:
-        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, данные содержат NaN или используются несовместимые параметры!')
+        print(f'Для {model_func.__name__}, данные содержат NaN или используются несовместимые параметры!')
         return None
     except RuntimeError:
-        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, минимизация по методу наименьших квадратов не удалась!')
+        print(f'Для {model_func.__name__}, минимизация по методу наименьших квадратов не удалась!')
         return None
     except OptimizeWarning:
-        # log_error('error_curve_fit.txt', f'Для {model_func.__name__}, ковариацию параметров невозможно оценить!')
+        print(f'Для {model_func.__name__}, ковариацию параметров невозможно оценить!')
         return None
     # Создаем цикл и выполняем минимизацию для каждого из методов
     k0 = (popt[0], popt[1], popt[2])  # Начальные значения параметров
@@ -375,13 +375,13 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
             res = minimize(squareMistakeGompertz3, k0, args=(np.array(data.generate), np.array(data.total), np.array(data.costs)), method=metod, bounds=kb)
 
     k = tuple(res.x)  # Получаем кортеж параметров
-    if not res.success:
-        return None
+    # if not res.success:
+    #     return None
 
     # определив начальные параметры определяем данные для всех лет
     # Готовим данные для расчета прогнозов
     years0 = [data.year[0]]  # Задаем начальный год
-    prSales = [0]  # Задаем начальный Prognose Sales
+    prSales = [data.generate[0]]  # Задаем начальный Prognose Sales
     prCumul = [data.generate[0]]  # Задаем начальный Prognose Cumulative
     ind_tgen = 1
     sum_prSales = data.generate[0]
@@ -440,6 +440,80 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
     else:
         return prSales, years0, k, k0
 
+def func_dif_innov_0_parametr(data, p0, p1, p2, model_func, metod: str):
+    """Функция диффузии иновации c 0 параметрами без предсказания.
+    Принимает
+    data - готовый pd.DataFrame
+    model_func - модель диффузии,
+    metod = один из методов минимизации, формат str,
+    Возвращает список значений диффузии, список лет, параметры.
+    """
+
+    k = p0, p1, p2  # Получаем кортеж параметров
+
+    # определив начальные параметры определяем данные для всех лет
+    # Готовим данные для расчета прогнозов
+    years0 = [data.year[0]]  # Задаем начальный год
+    finalYear = list(data.year)[-1]  # Задаем Конечный год
+    prSales = [data.generate[0]]  # Задаем начальный Prognose Sales
+    prCumul = [data.generate[0]]  # Задаем начальный Prognose Cumulative
+    # print(prCumul)
+    ind_tgen = 1
+    sum_prSales = data.generate[0]
+    # print(sum_prSales)
+    m = np.array(data.total)
+    c = np.array(data.costs)
+
+    # Рассчитываем для всех лет
+    while years0[-1] < finalYear:
+        years0.append(years0[-1]+1)  # Год
+        # Prognose Sales
+        match model_func.__name__:
+            case 'Bass1':
+                prSales.append(Bass1(prCumul[-1], k[0], k[1], k[2]))  # Prognose Sales
+                prCumul.append(prCumul[-1]+prSales[-1])  # Prognose Cumulative
+            case 'Bass2':
+                z = m[ind_tgen - 1], sum_prSales
+                bs = Bass2(z, k[0], k[1], k[2])
+                prSales.append(bs)  # Prognose Sales
+                prCumul.append(prCumul[-1]+prSales[-1])  # Prognose Cumulative
+                sum_prSales += bs
+                ind_tgen += 1
+            case 'Bass3':
+                z = m[ind_tgen - 1], sum_prSales, c[ind_tgen - 1]
+                bs = Bass3(z, k[0], k[1], k[2])
+                prSales.append(bs)  # Prognose Sales
+                prCumul.append(prCumul[-1]+prSales[-1])  # Prognose Cumulative
+                sum_prSales += bs
+                ind_tgen += 1
+            case 'Logic1':
+                prSales.append(Logic1((data.generate[0], ind_tgen), k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+            case 'Logic2':
+                z = data.generate[0], ind_tgen, m[ind_tgen - 1]  # indexdata, total_values
+                prSales.append(Logic2(z, k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+            case 'Logic3':
+                z = data.generate[0], ind_tgen, m[ind_tgen - 1], c[ind_tgen - 1]   # indexdata, total_values
+                prSales.append(Logic3(z, k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+            case 'Gompertz1':
+                prSales.append(Gompertz1((data.generate[0], ind_tgen), k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+            case 'Gompertz2':
+                z = data.generate[0], ind_tgen, m[ind_tgen - 1]  # indexdata, total_values
+                prSales.append(Gompertz2(z, k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+            case 'Gompertz3':
+                z = data.generate[0], ind_tgen, m[ind_tgen - 1], c[ind_tgen - 1]   # indexdata, total_values
+                prSales.append(Gompertz3(z, k[0], k[1], k[2]))  # Добавляем следующий Prognose
+                ind_tgen += 1  # Увеличиваем порядковый номер
+
+    if model_func.__name__ in ['Bass1', 'Bass2', 'Bass3']:
+        return prCumul, years0
+    else:
+        return prSales, years0
+
 def func_minus_year(country, numberP, numberS, model, metod):
     """Функция func_minus_year используется для построения графика продаж данных для конкретной страны и модели за определенное количество лет.
     Данные выводятся для исходного количества лет, а затем функция прогнозирует продажи на дополнительные годы с шагом, указанным пользователем.
@@ -453,13 +527,21 @@ def func_minus_year(country, numberP, numberS, model, metod):
     country: (str) Название страны, для которой выводятся данные.
     Функция не возвращает значение. Она отображает график продаж данных и прогнозируемых данных на том же графике.
     """
+    # проверяем что такие данные уже есть, если есть, выходим
+    select_results = f'SELECT * FROM results WHERE Country="{country}" AND prognos="{numberP}" AND step="{numberS}" AND model="{model.__name__}"'
+    # print(select_results)
+    data_results = execute_sql_query(select_results)
+    # print(data_results)
+    if data_results:
+        return None
+
 
 
     select_year = f"PRAGMA table_info(Wind)"
     data_year = [column[1] for column in execute_sql_query(select_year)]
     # print(data_year)
 
-    select_total = f'SELECT * FROM Wind WHERE Country="Total"'
+    select_total = f'SELECT * FROM Wind WHERE Country="Total {country}"'
     # print(select_total)
     data_total = execute_sql_query(select_total)[0]
     # print(data_total)
@@ -470,7 +552,7 @@ def func_minus_year(country, numberP, numberS, model, metod):
     # print(data_costs[2:])
 
     country = country
-    # country  = 'Total World'
+    # country  = 'World'
     select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
     # print(select_country)
     data_country = execute_sql_query(select_country)[0]
@@ -512,18 +594,34 @@ def func_minus_year(country, numberP, numberS, model, metod):
     placeholders = ', '.join(f"'{i}'" for i in line)
     insert1 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
     execute_sql_query(insert1)
-    if numberS == 0:
+
+    # добаляем данные без предсказания
+    # проверяем что такие данные уже есть, если есть не добавляем
+    select_results0 = f'SELECT * FROM results WHERE Country="{country}" AND prognos="0" AND step="0" AND model="{model.__name__}"'
+    # print(select_results0)
+    data_results0 = execute_sql_query(select_results0)
+    # print(data_results0)
+    if not data_results0:
+        p0, p1, p2 = result1[-2]
+        # print(p0, p1, p2)
+        result0 = func_dif_innov_0_parametr(data, p0, p1, p2, model, metod)
+        # подготовим информацию для вставки в БД
+        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+        line = [country, '0', '0', model.__name__, metod, '-', result1[-1]]
+
+        columns += result0[1]
+        line += result0[0]
+        columns_str = ', '.join(f"'{col}'" for col in columns)
+        placeholders = ', '.join(f"'{i}'" for i in line)
+        insert0 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
+        # print(insert0)
+        execute_sql_query(insert0)
+
+
+    # если шаг = 0 или прогноз слишком большой, выходим из программы
+    if int(numberS) == 0 or int(numberP) >= 6:
         return None
-    # print(len(columns1))
-    # print(len(line1))
-    # акумулируем результаты
-    results = {}
-    results[f'result{finalYear}'] = result1[0]
-    # results[country]['year'] = data.year
-    # results[country]['generate'] = data.generate
-    # pyplot.plot(result1[1], result1[0], label=f'result{finalYear}')
-    # данные без предсказаний
-    # result0 = func_dif_innov(data, list(data.year)[-1], model, metod)
+
     while True:
         columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
         line = [country, numberP, numberS, model.__name__, metod]
@@ -663,32 +761,33 @@ if __name__ == '__main__':
                     # func_minus_year(i, k, 5, l, metods[0])
                     # z += 1
                     # pass
-    result_dict = {}
-    result_list = []
-    for i in data_all_country:
-        for l in models:
-            print(z, i, 5, 5, l.__name__, metods[0])
-            my_dict = analyze_data(i, 5, 5, l.__name__, metods[0])
+    # result_dict = {}
+    # result_list = []
+    # for i in data_all_country:
+    #     for l in models:
+    #         print(z, i, 5, 5, l.__name__, metods[0])
+    #         my_dict = analyze_data(i, 5, 5, l.__name__, metods[0])
             # with open('result_dict.json', 'a') as json_file:
             #     json.dump(my_dict, json_file, indent=4)
-            for n in my_dict[i][5][5][l.__name__][metods[0]].keys():
-                if n != 'origen':
-                    result_list1 = [i, 5, 5, l.__name__, metods[0], n, my_dict[i][5][5][l.__name__][metods[0]][n][2], my_dict[i][5][5][l.__name__][metods[0]][n][3], my_dict[i][5][5][l.__name__][metods[0]][n][4]]
-                    result_list.append(result_list1)
-            z += 1
+            # for n in my_dict[i][5][5][l.__name__][metods[0]].keys():
+            #     if n != 'origen':
+            #         result_list1 = [i, 5, 5, l.__name__, metods[0], n, my_dict[i][5][5][l.__name__][metods[0]][n][2], my_dict[i][5][5][l.__name__][metods[0]][n][3], my_dict[i][5][5][l.__name__][metods[0]][n][4]]
+            #         result_list.append(result_list1)
+            # z += 1
 
     # Создаем DataFrame
-    df = pd.DataFrame(result_list, columns=['country','prog', 'step', 'model', 'metod', 'year', 'rmse', 'mae', 'sum'])
+    # df = pd.DataFrame(result_list, columns=['country','prog', 'step', 'model', 'metod', 'year', 'rmse', 'mae', 'sum'])
     # Записываем в Excel
-    df.to_excel('result_list.xlsx', index=False)
+    # df.to_excel('result_list.xlsx', index=False)
 
     # for i in result_list:
     #     print(i)
 
 
 
-
-    # func_minus_year('Total North America', 2, 0, models[0], metods[0])
+    execute_sql_query('DELETE FROM results;')
+    for i in models:
+        func_minus_year('Canada', 5, 5, i, metods[0])
 
 
     end_time2 = time.time()

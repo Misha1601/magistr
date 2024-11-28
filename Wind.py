@@ -35,6 +35,12 @@ CREATE TABLE IF NOT EXISTS results (
     metod TEXT NOT NULL,
     param TEXT NOT NULL,
     param0 TEXT NOT NULL,
+    year_test INTEGER,
+    data_origin REAL,
+    data_prognos REAL,
+    otcloneni REAL,
+    MAE REAL,
+    MAE_pribl REAL,
 '''
 
 # Добавляем поля для каждого года от 1995 до 2073

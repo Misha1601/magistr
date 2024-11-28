@@ -44,43 +44,43 @@ def analyze_data(country, prognos, step, model, metod):
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            if len(original_values) >= len(predicted_values):
+            # if len(original_values) >= len(predicted_values):
                 # Среднеквадратичное отклонение (RMSE)
-                print(len(original_data_wind))
-                print(len(predicted_data))
-                rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values))**2))
+                # print(len(original_data_wind))
+                # print(len(predicted_data))
+                # rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values))**2))
                 # Средняя абсолютная ошибка (MAE)
-                mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values)))
-            else:
+                # mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values)))
+            # else:
                 # Среднеквадратичное отклонение (RMSE)
-                print(len(original_data_wind))
-                print(len(predicted_data))
-                rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)]))**2))
+                # print(len(original_data_wind))
+                # print(len(predicted_data))
+                # rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)]))**2))
                 # Средняя абсолютная ошибка (MAE)
-                mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)])))
-            result_dict[country][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+                # mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)])))
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
         else:
             predicted_data = new_df[filtered_columns_wind].astype(float)
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            len_predicted_values = len(predicted_values)
-            if len_original_values >= len_predicted_values:
-                new_original_values = original_values[:len_predicted_values]
-                new_predicted_values = predicted_values
-            else:
-                new_predicted_values = predicted_values[:len_original_values]
-                new_original_values = original_values
+            # len_predicted_values = len(predicted_values)
+            # if len_original_values >= len_predicted_values:
+            #     new_original_values = original_values[:len_predicted_values]
+            #     new_predicted_values = predicted_values
+            # else:
+            #     new_predicted_values = predicted_values[:len_original_values]
+            #     new_original_values = original_values
             # print(len(new_original_values))
             # print(len(new_predicted_values))
-            y_true = np.array(new_original_values)
-            y_pred = np.array(new_predicted_values)
+            # y_true = np.array(new_original_values)
+            # y_pred = np.array(new_predicted_values)
 
             # Среднеквадратичное отклонение (RMSE)
-            rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+            # rmse = np.sqrt(np.mean((y_true - y_pred)**2))
             # Средняя абсолютная ошибка (MAE)
-            mae = np.mean(np.abs(y_true - y_pred))
-            result_dict[country][year_full[-1]] = year_full_int, predicted_values, rmse, mae
+            # mae = np.mean(np.abs(y_true - y_pred))
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
     return result_dict
 
 
@@ -108,23 +108,25 @@ def export_tables_to_excel(db_name):
 
 if __name__ == '__main__':
     # Пример использования функции
-    name_strana  = 'Vietnam'
-    strana = analyze_data(name_strana, 5, 5, 'Bass3', 'Nelder-Mead')
-    print(strana)
+    name_strana  = 'Canada'
+    models = ['Bass1', 'Bass2', 'Bass3', 'Logic1', 'Logic2', 'Logic3', 'Gompertz1', 'Gompertz2', 'Gompertz3']
+    for k in models:
+        strana = analyze_data(name_strana, 5, 5, k, 'Nelder-Mead')
+        # print(strana)
 
-    # export_tables_to_excel('Wind.db')
+        # export_tables_to_excel('Wind.db')
 
-    plt.figure(figsize=(10, 6))
-    for i in strana[name_strana].keys():
-        if i == 'origen':
-            plt.plot(strana[name_strana][i][0], strana[name_strana][i][1], label=f'Оригинальные данные')
-        else:
-            # print(i)
-            plt.plot(strana[name_strana][i][0], strana[name_strana][i][1], label=f"Предсказанные данные до {i}, {strana[name_strana][i][2]}, {strana[name_strana][i][3]}")
-    plt.xlabel('Год')
-    plt.ylabel('Значение')
-    plt.title(f'Сравнение данных')
-    plt.legend(loc='upper right', bbox_to_anchor=(0.65, 1.15))
-    # Настройка ориентации меток на оси X
-    plt.xticks(rotation=90)
-    plt.show()
+        plt.figure(figsize=(10, 6))
+        for i in strana[name_strana].keys():
+            if i == 'origen':
+                plt.plot(strana[name_strana][i][0], strana[name_strana][i][1], label=f'Оригинальные данные')
+            else:
+                # print(i)
+                plt.plot(strana[name_strana][i][0], strana[name_strana][i][1], label=f"Предсказанные данные до {i}") #, {strana[name_strana][i][2]}, {strana[name_strana][i][3]}")
+        plt.xlabel('Год')
+        plt.ylabel('Значение')
+        plt.title(f'Модель {k}')
+        plt.legend(loc='upper right', bbox_to_anchor=(0.3, 1.15))
+        # Настройка ориентации меток на оси X
+        plt.xticks(rotation=90)
+        plt.show()
