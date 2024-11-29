@@ -572,7 +572,8 @@ def func_minus_year(country, numberP, numberS, model, metod):
 
 
     # подготовим информацию для вставки в БД
-    columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+    columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0', 'year_test', 'data_origin', 'data_prognos', 'otcloneni', 'MAE', 'MAE_pribl']
+    # columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
     line = [country, str(numberP), str(numberS), model.__name__, metod]
 
 
@@ -586,10 +587,16 @@ def func_minus_year(country, numberP, numberS, model, metod):
     result1 = func_dif_innov(data, finalYear, model, metod)
     if result1 == None:
         return None
-    line.append(result1[-2])
-    line.append(result1[-1])
-    columns += result1[1]
-    line += result1[0]
+    line.append(result1[-2]) # param
+    line.append(result1[-1]) # param0
+    line.append(list(data['year'])[-1]) # year_test
+    line.append('-') # data_origin
+    line.append(float(result1[0][-1])) # data_prognos
+    line.append('-') # otcloneni
+    line.append('-') # MAE Средняя абсолютная ошибка (MAE)
+    line.append('-') # MAE_pribl Средняя абсолютная ошибка (MAE)
+    columns += result1[1] # Добавляем полученные года
+    line += result1[0] # Результат по каждому году
     columns_str = ', '.join(f"'{col}'" for col in columns)
     placeholders = ', '.join(f"'{i}'" for i in line)
     insert1 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
@@ -606,11 +613,19 @@ def func_minus_year(country, numberP, numberS, model, metod):
         # print(p0, p1, p2)
         result0 = func_dif_innov_0_parametr(data, p0, p1, p2, model, metod)
         # подготовим информацию для вставки в БД
-        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+        # columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0', 'year_test', 'data_origin', 'data_prognos', 'otcloneni', 'MAE', 'MAE_pribl']
         line = [country, '0', '0', model.__name__, metod, '-', result1[-1]]
 
-        columns += result0[1]
-        line += result0[0]
+        line.append('-') # year_test
+        line.append('-') # data_origin
+        line.append('-') # data_prognos
+        line.append(float(list(data['generate'])[-1])-float(result0[0][-1])) # otcloneni
+        mae = np.mean(np.abs(np.array(list(data['generate'])) - np.array(result0[0])))
+        line.append(mae) # MAE Средняя абсолютная ошибка (MAE)
+        line.append('-') # MAE_pribl Средняя абсолютная ошибка (MAE)
+        columns += result0[1] # Добавляем полученные года
+        line += result0[0] # Результат по каждому году
         columns_str = ', '.join(f"'{col}'" for col in columns)
         placeholders = ', '.join(f"'{i}'" for i in line)
         insert0 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
@@ -619,22 +634,54 @@ def func_minus_year(country, numberP, numberS, model, metod):
 
 
     # если шаг = 0 или прогноз слишком большой, выходим из программы
-    if int(numberS) == 0 or int(numberP) >= 6:
+    if int(numberS) == 0:
         return None
 
+    if int(numberP) >= 6:
+        numberStep = 5
+        numberP1 = 5
+        numberS1 = 5
+        # проверяем что такие данные уже есть, если есть, выходим
+        select_results = f'SELECT * FROM results WHERE Country="{country}" AND prognos="{numberP1}" AND step="{numberS1}" AND model="{model.__name__}"'
+        # print(select_results)
+        data_results = execute_sql_query(select_results)
+        # print(data_results)
+        if data_results:
+            return None
+
     while True:
-        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
-        line = [country, numberP, numberS, model.__name__, metod]
+        # columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
+        columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0', 'year_test', 'data_origin', 'data_prognos', 'otcloneni', 'MAE', 'MAE_pribl']
+        line = [country, numberP1, numberS1, model.__name__, metod]
         data1 = data[:-numberStep]
         if list(data1.year)[-1] <= 2001:
             break
         # print(list(data1.year)[-1])
-        finalYear = list(data1.year)[-1] + numberP
+        finalYear = list(data1.year)[-1] + numberP1
         # print(list(data1.year)[-1], finalYear)
         result2 = func_dif_innov(data1, finalYear, model, metod)
         if result2:
-            line.append(result2[-2])
-            line.append(result2[-1])
+            line.append(result2[-2]) # param
+            line.append(result2[-1]) # param0
+
+            line.append(list(data1.year)[-1]) # year_test
+            ind = numberStep - numberS1
+            if ind == 0:
+                res_gen = float(list(data['generate'])[-1])
+                res_gen_list = list(data['generate'])
+                res_gen_pribl = result0[0]
+            else:
+                res_gen = float(list(data[:-ind]['generate'])[-1])
+                res_gen_list = list(data[:-ind]['generate'])[-1]
+                res_gen_pribl = result0[0][:-ind]
+            line.append(res_gen) # data_origin
+            line.append(float(result2[0][-1])) # data_prognos
+            line.append(res_gen-float(result2[0][-1])) # otcloneni
+            mae = np.mean(np.abs(np.array(res_gen_list) - np.array(result2[0])))
+            line.append(mae) # MAE Средняя абсолютная ошибка (MAE)
+            mae2 = np.mean(np.abs(np.array(res_gen_pribl) - np.array(result2[0])))
+            line.append(mae2) # MAE_pribl Средняя абсолютная ошибка (MAE)
+
             columns += result2[1]
             line += result2[0]
             columns_str = ', '.join(f"'{col}'" for col in columns)
@@ -645,7 +692,7 @@ def func_minus_year(country, numberP, numberS, model, metod):
             # pyplot.plot(result2[1], result2[0], label=f'result{finalYear}')
         else:
             break
-        numberStep += numberS
+        numberStep += numberS1
         # print(numberStep)
     # pprint(results)
 
@@ -785,9 +832,9 @@ if __name__ == '__main__':
 
 
 
-    execute_sql_query('DELETE FROM results;')
+    # execute_sql_query('DELETE FROM results;')
     for i in models:
-        func_minus_year('Canada', 5, 5, i, metods[0])
+        func_minus_year('Canada', 50, 5, i, metods[0])
 
 
     end_time2 = time.time()

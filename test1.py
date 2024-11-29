@@ -110,8 +110,9 @@ if __name__ == '__main__':
     # Пример использования функции
     name_strana  = 'Canada'
     models = ['Bass1', 'Bass2', 'Bass3', 'Logic1', 'Logic2', 'Logic3', 'Gompertz1', 'Gompertz2', 'Gompertz3']
+    p = 50
     for k in models:
-        strana = analyze_data(name_strana, 5, 5, k, 'Nelder-Mead')
+        strana = analyze_data(name_strana, p, 5, k, 'Nelder-Mead')
         # print(strana)
 
         # export_tables_to_excel('Wind.db')
@@ -123,8 +124,15 @@ if __name__ == '__main__':
             else:
                 # print(i)
                 plt.plot(strana[name_strana][i][0], strana[name_strana][i][1], label=f"Предсказанные данные до {i}") #, {strana[name_strana][i][2]}, {strana[name_strana][i][3]}")
+        if p >= 6:
+            strana2 = analyze_data(name_strana, 5, 5, k, 'Nelder-Mead')
+            for n in strana2[name_strana].keys():
+                if n == 'origen':
+                    continue
+                plt.plot(strana2[name_strana][n][0], strana2[name_strana][n][1], label=f"Предсказанные данные до {n}")
+
         plt.xlabel('Год')
-        plt.ylabel('Значение')
+        plt.ylabel('KW')
         plt.title(f'Модель {k}')
         plt.legend(loc='upper right', bbox_to_anchor=(0.3, 1.15))
         # Настройка ориентации меток на оси X
