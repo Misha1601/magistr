@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wind Project</title>
+</head>
+<body>
+    <h1>Wind Forecast</h1>
+    <form method="post" action="{% url 'process_form' %}" target="_blank">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Получить графики">
+    </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const customPredictionInput = document.querySelector('input[name="custom_prediction"]');
+        const predictionRadios = document.querySelectorAll('input[name="prediction"]');
+        const otherRadio = document.querySelector('input[value="6"]'); // Radio-кнопка "Other"
+
+        // Обработчик изменения значения в поле custom_prediction
+        customPredictionInput.addEventListener('input', function() {
+            if (this.value) {
+                // Если в поле есть значение, выбираем "Other"
+                otherRadio.checked = true;
+            }
+        });
+
+        // Обработчик клика по radio-кнопкам
+        predictionRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked && this.value !== '6') {
+                    // Если выбрана любая кнопка кроме "Other", очищаем поле custom_prediction
+                    customPredictionInput.value = '';
+                }
+            });
+        });
+
+        // Обработчик фокуса на поле custom_prediction
+        customPredictionInput.addEventListener('focus', function() {
+            // При получении фокуса поля custom_prediction выбираем "Other"
+            otherRadio.checked = true;
+        });
+    });
+</script>
+</body>
+</html>

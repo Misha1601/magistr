@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Графики</title>
+    <style>
+        .plot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .plot-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .plot-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Результаты</h1>
+    <p>Страна: {{ form_data.country }}</p>
+    <p>Модели: {{ form_data.models }}</p>
+    <p>Предсказание: {{ form_data.prediction }}</p>
+
+    {% if bass_plots %}
+    <h2>Bass Models</h2>
+    <div class="plot-row">
+        {% for plot_name, plot_html in bass_plots.items %}
+            <div class="plot-item">
+                <h3>{{ plot_name }}</h3>
+                {{ plot_html|safe }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if logic_plots %}
+    <h2>Logic Models</h2>
+    <div class="plot-row">
+        {% for plot_name, plot_html in logic_plots.items %}
+            <div class="plot-item">
+                <h3>{{ plot_name }}</h3>
+                {{ plot_html|safe }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if gompertz_plots %}
+    <h2>Gompertz Models</h2>
+    <div class="plot-row">
+        {% for plot_name, plot_html in gompertz_plots.items %}
+            <div class="plot-item">
+                <h3>{{ plot_name }}</h3>
+                {{ plot_html|safe }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>

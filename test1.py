@@ -44,42 +44,12 @@ def analyze_data(country, prognos, step, model, metod):
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            # if len(original_values) >= len(predicted_values):
-                # Среднеквадратичное отклонение (RMSE)
-                # print(len(original_data_wind))
-                # print(len(predicted_data))
-                # rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values))**2))
-                # Средняя абсолютная ошибка (MAE)
-                # mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values)))
-            # else:
-                # Среднеквадратичное отклонение (RMSE)
-                # print(len(original_data_wind))
-                # print(len(predicted_data))
-                # rmse = np.sqrt(np.mean((np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)]))**2))
-                # Средняя абсолютная ошибка (MAE)
-                # mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values[:len(original_values)])))
             result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
         else:
             predicted_data = new_df[filtered_columns_wind].astype(float)
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            # len_predicted_values = len(predicted_values)
-            # if len_original_values >= len_predicted_values:
-            #     new_original_values = original_values[:len_predicted_values]
-            #     new_predicted_values = predicted_values
-            # else:
-            #     new_predicted_values = predicted_values[:len_original_values]
-            #     new_original_values = original_values
-            # print(len(new_original_values))
-            # print(len(new_predicted_values))
-            # y_true = np.array(new_original_values)
-            # y_pred = np.array(new_predicted_values)
-
-            # Среднеквадратичное отклонение (RMSE)
-            # rmse = np.sqrt(np.mean((y_true - y_pred)**2))
-            # Средняя абсолютная ошибка (MAE)
-            # mae = np.mean(np.abs(y_true - y_pred))
             result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
     return result_dict
 
