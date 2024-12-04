@@ -80,9 +80,9 @@ if __name__ == '__main__':
     # Пример использования функции
     name_strana  = 'Canada'
     models = ['Bass1', 'Bass2', 'Bass3', 'Logic1', 'Logic2', 'Logic3', 'Gompertz1', 'Gompertz2', 'Gompertz3']
-    p = 50
+    p = 30
     for k in models:
-        strana = analyze_data(name_strana, p, 5, k, 'Nelder-Mead')
+        strana = analyze_data(name_strana, p, '-', k, 'Nelder-Mead')
         # print(strana)
 
         # export_tables_to_excel('Wind.db')

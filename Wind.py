@@ -38,9 +38,11 @@ CREATE TABLE IF NOT EXISTS results (
     year_test INTEGER,
     data_origin REAL,
     data_prognos REAL,
-    otcloneni REAL,
+    otclonenie REAL,
+    otclonenie_procent REAL,
     MAE REAL,
     MAE_pribl REAL,
+    MAE_procent REAL,
 '''
 
 # Добавляем поля для каждого года от 1995 до 2073
