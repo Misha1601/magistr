@@ -1,3 +1,4 @@
+import os
 from pprint import pprint
 from matplotlib import pyplot
 import json
@@ -282,9 +283,12 @@ def execute_sql_query(sql_query, params=None):
     :param sql_query: SQL-запрос для выполнения.
     :return: Список с результатами запроса.
     """
+    # Путь к БД относительно текущего файла
+    db_path = os.path.join(os.path.dirname(__file__), 'Wind.db')
+
     try:
         # Подключение к базе данных SQLite
-        conn = sqlite3.connect('Wind.db')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         # Выполнение SQL-запроса
         if params:
@@ -830,6 +834,16 @@ if __name__ == '__main__':
     select_all_country = f'SELECT DISTINCT "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
     data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
     # print(data_all_country)
+
+    select_all_region_country = f'SELECT DISTINCT "Region", "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
+    region = {}
+    data_all_region_country = execute_sql_query(select_all_region_country)
+    for column in data_all_region_country:
+        if column[0] in region:
+            region[column[0]].append(column[1])
+        else:
+            region[column[0]] = [column[1]]
+    print(region)
 
     # finalYear = 2025
     models = [Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3]

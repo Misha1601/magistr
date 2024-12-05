@@ -4,7 +4,7 @@
     <title>Wind Project</title>
 </head>
 <body>
-    <h1>Wind Forecast</h1>
+    <h1>Предсказание ветрогенерации с учетом имеющихся данных за предыдущие года</h1>
     <form method="post" action="{% url 'process_form' %}" target="_blank">
         {% csrf_token %}
         {{ form.as_p }}

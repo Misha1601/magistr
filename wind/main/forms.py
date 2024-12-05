@@ -1,16 +1,22 @@
 from django import forms
+from modules.Models_diffusion_innovations import execute_sql_query
 
-COUNTRIES = [
-    ('usa', 'США'),
-    ('russia', 'Россия'),
-    ('china', 'Китай'),
-    ('germany', 'Германия'),
-]
+# Получаем уникальные регионы и страны
+select_all_region_country = f'SELECT DISTINCT "Region", "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
+region = {}
+COUNTRIES = execute_sql_query(select_all_region_country)
+
+# COUNTRIES = [
+#     ('usa', 'США'),
+#     ('russia', 'Россия'),
+#     ('china', 'Китай'),
+#     ('germany', 'Германия'),
+# ]
 
 MODELS = [
-    ('Bass1', 'Bass111111'),
-    ('Bass2', 'Bass2222'),
-    ('Bass3', 'Bass3333'),
+    ('Bass1', 'Bass1'),
+    ('Bass2', 'Bass2'),
+    ('Bass3', 'Bass3'),
     ('Logic1', 'Logic1'),
     ('Logic2', 'Logic2'),
     ('Logic3', 'Logic3'),
