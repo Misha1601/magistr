@@ -21,64 +21,123 @@
             <p>{{ form.region.label_tag }} {{ form.region }}</p>
             <p>{{ form.country.label_tag }} {{ form.country }}</p>
         </div>
-        <p>{{ form.models.label_tag }} {{ form.models }}</p>
+        <div class="models-container">
+            <p>{{ form.models.label_tag }} {{ form.models }}</p>
+        </div>
         <p>{{ form.prediction.label_tag }} {{ form.prediction }}</p>
         <p>{{ form.custom_prediction.label_tag }} {{ form.custom_prediction }}</p>
         <input type="submit" value="Получить графики">
     </form>
 
 <script>
-    // Словарь регионов и стран
-    const regionsCountries = {{ regions_countries|safe }};
-
     document.addEventListener('DOMContentLoaded', function() {
-        const regionSelect = document.querySelector('.region-select');
-        const countrySelect = document.querySelector('.country-select');
-        const customPredictionInput = document.querySelector('input[name="custom_prediction"]');
         const predictionRadios = document.querySelectorAll('input[name="prediction"]');
+        const customPredictionInput = document.querySelector('input[name="custom_prediction"]');
         const otherRadio = document.querySelector('input[value="6"]');
+        const modelCheckboxes = document.querySelectorAll('input[name="models"]');
+        const form = document.querySelector('form');
 
-        // Функция обновления списка стран
-        function updateCountries() {
-            const selectedRegion = regionSelect.value;
-            const countries = regionsCountries[selectedRegion] || [];
+        // Функция сброса стилей и очистки для custom prediction
+        function resetCustomPrediction() {
+            customPredictionInput.value = '';
+            customPredictionInput.style.border = '';
+            customPredictionInput.style.backgroundColor = '';
 
-            // Очищаем текущий список стран
-            countrySelect.innerHTML = '';
+            const errorMessage = customPredictionInput.nextElementSibling;
+            if (errorMessage && errorMessage.classList.contains('error-message')) {
+                errorMessage.remove();
+            }
+        }
 
-            // Добавляем новые опции
-            countries.forEach(country => {
-                const option = new Option(country, country);
-                countrySelect.add(option);
+        // Функция показа ошибки для моделей
+        function showModelsError() {
+            const modelsContainer = document.querySelector('.models-container');
+
+            // Удаляем предыдущие сообщения об ошибке
+            const prevError = modelsContainer.querySelector('.error-message');
+            if (prevError) {
+                prevError.remove();
+            }
+
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = 'Выберите хотя бы одну модель';
+            errorMessage.style.color = 'red';
+            errorMessage.style.marginTop = '5px';
+            errorMessage.classList.add('error-message');
+
+            modelsContainer.appendChild(errorMessage);
+            modelsContainer.style.backgroundColor = '#ffeeee';
+
+            // Очистка ошибки при выборе модели
+            modelCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function clearModelsError() {
+                    modelsContainer.style.backgroundColor = '';
+                    errorMessage.remove();
+                    checkbox.removeEventListener('change', clearModelsError);
+                });
             });
         }
 
-        // Обработчик изменения региона
-        regionSelect.addEventListener('change', updateCountries);
-
-        // Обработчик изменения значения в поле custom_prediction
-        customPredictionInput.addEventListener('input', function() {
-            if (this.value) {
-                otherRadio.checked = true;
-            }
-        });
-
-        // Обработчик клика по radio-кнопкам
+        // Обработчики для радио-кнопок
         predictionRadios.forEach(radio => {
             radio.addEventListener('change', function() {
-                if (this.checked && this.value !== '6') {
-                    customPredictionInput.value = '';
+                if (this.value !== '6') {
+                    resetCustomPrediction();
                 }
             });
         });
 
-        // Обработчик фокуса на поле custom_prediction
-        customPredictionInput.addEventListener('focus', function() {
-            otherRadio.checked = true;
+        // Обработчик submit
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Проверка custom prediction
+            if (otherRadio.checked && !customPredictionInput.value) {
+                event.preventDefault();
+
+                customPredictionInput.style.border = '2px solid red';
+                customPredictionInput.style.backgroundColor = '#ffeeee';
+
+                const errorMessage = document.createElement('div');
+                errorMessage.textContent = 'При выборе "Other" необходимо указать значение';
+                errorMessage.style.color = 'red';
+                errorMessage.style.marginTop = '5px';
+                errorMessage.classList.add('error-message');
+
+                const prevError = customPredictionInput.nextElementSibling;
+                if (prevError && prevError.classList.contains('error-message')) {
+                    prevError.remove();
+                }
+
+                customPredictionInput.insertAdjacentElement('afterend', errorMessage);
+                customPredictionInput.focus();
+                isValid = false;
+            }
+
+            // Проверка моделей
+            const selectedModels = Array.from(modelCheckboxes).filter(cb => cb.checked);
+            if (selectedModels.length === 0) {
+                event.preventDefault();
+                showModelsError();
+                isValid = false;
+            }
+
+            return isValid;
         });
 
-        // Инициализируем список стран при загрузке страницы
-        updateCountries();
+        // Очистка ошибок при вводе custom prediction
+        customPredictionInput.addEventListener('input', function() {
+            if (this.value) {
+                otherRadio.checked = true;
+                this.style.border = '';
+                this.style.backgroundColor = '';
+
+                const errorMessage = this.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('error-message')) {
+                    errorMessage.remove();
+                }
+            }
+        });
     });
 </script>
 </body>
