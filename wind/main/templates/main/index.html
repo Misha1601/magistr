@@ -2,24 +2,63 @@
 <html>
 <head>
     <title>Wind Project</title>
+    <style>
+        .region-country-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .region-country-container p {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Предсказание ветрогенерации с учетом имеющихся данных за предыдущие года</h1>
+    <h1>Предсказание ветрогенерации с учетом имеющихся данных за предыдущие годы</h1>
     <form method="post" action="{% url 'process_form' %}" target="_blank">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="region-country-container">
+            <p>{{ form.region.label_tag }} {{ form.region }}</p>
+            <p>{{ form.country.label_tag }} {{ form.country }}</p>
+        </div>
+        <p>{{ form.models.label_tag }} {{ form.models }}</p>
+        <p>{{ form.prediction.label_tag }} {{ form.prediction }}</p>
+        <p>{{ form.custom_prediction.label_tag }} {{ form.custom_prediction }}</p>
         <input type="submit" value="Получить графики">
     </form>
+
 <script>
+    // Словарь регионов и стран
+    const regionsCountries = {{ regions_countries|safe }};
+
     document.addEventListener('DOMContentLoaded', function() {
+        const regionSelect = document.querySelector('.region-select');
+        const countrySelect = document.querySelector('.country-select');
         const customPredictionInput = document.querySelector('input[name="custom_prediction"]');
         const predictionRadios = document.querySelectorAll('input[name="prediction"]');
-        const otherRadio = document.querySelector('input[value="6"]'); // Radio-кнопка "Other"
+        const otherRadio = document.querySelector('input[value="6"]');
+
+        // Функция обновления списка стран
+        function updateCountries() {
+            const selectedRegion = regionSelect.value;
+            const countries = regionsCountries[selectedRegion] || [];
+
+            // Очищаем текущий список стран
+            countrySelect.innerHTML = '';
+
+            // Добавляем новые опции
+            countries.forEach(country => {
+                const option = new Option(country, country);
+                countrySelect.add(option);
+            });
+        }
+
+        // Обработчик изменения региона
+        regionSelect.addEventListener('change', updateCountries);
 
         // Обработчик изменения значения в поле custom_prediction
         customPredictionInput.addEventListener('input', function() {
             if (this.value) {
-                // Если в поле есть значение, выбираем "Other"
                 otherRadio.checked = true;
             }
         });
@@ -28,7 +67,6 @@
         predictionRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.checked && this.value !== '6') {
-                    // Если выбрана любая кнопка кроме "Other", очищаем поле custom_prediction
                     customPredictionInput.value = '';
                 }
             });
@@ -36,9 +74,11 @@
 
         // Обработчик фокуса на поле custom_prediction
         customPredictionInput.addEventListener('focus', function() {
-            // При получении фокуса поля custom_prediction выбираем "Other"
             otherRadio.checked = true;
         });
+
+        // Инициализируем список стран при загрузке страницы
+        updateCountries();
     });
 </script>
 </body>

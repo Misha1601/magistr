@@ -3,15 +3,19 @@ from modules.Models_diffusion_innovations import execute_sql_query
 
 # Получаем уникальные регионы и страны
 select_all_region_country = f'SELECT DISTINCT "Region", "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
-region = {}
-COUNTRIES = execute_sql_query(select_all_region_country)
+COUNTRIES_DATA = execute_sql_query(select_all_region_country)
 
-# COUNTRIES = [
-#     ('usa', 'США'),
-#     ('russia', 'Россия'),
-#     ('china', 'Китай'),
-#     ('germany', 'Германия'),
-# ]
+# Создаем словарь регионов и стран
+REGIONS_COUNTRIES = {}
+for region, country in COUNTRIES_DATA:
+    if region not in REGIONS_COUNTRIES:
+        REGIONS_COUNTRIES[region] = []
+    REGIONS_COUNTRIES[region].append(country)
+
+# Создаем список регионов для выбора
+REGIONS = [(region, region) for region in REGIONS_COUNTRIES.keys()]
+# Создаем полный список стран для начального состояния
+ALL_COUNTRIES = [(country, country) for _, country in COUNTRIES_DATA]
 
 MODELS = [
     ('Bass1', 'Bass1'),
@@ -35,10 +39,15 @@ PREDICTIONS = [
 ]
 
 class WindForm(forms.Form):
+    region = forms.ChoiceField(
+        choices=REGIONS,
+        label="Регион",
+        widget=forms.Select(attrs={'class': 'region-select'})
+    )
     country = forms.ChoiceField(
-        choices=COUNTRIES,
+        choices=ALL_COUNTRIES,
         label="Страна",
-        widget=forms.Select
+        widget=forms.Select(attrs={'class': 'country-select'})
     )
     models = forms.MultipleChoiceField(
         choices=MODELS,

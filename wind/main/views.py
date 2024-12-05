@@ -1,8 +1,9 @@
+import json
 import plotly.graph_objs as go
 import plotly.offline as pio
 import numpy as np
 from django.shortcuts import render, redirect
-from .forms import WindForm
+from .forms import WindForm, REGIONS_COUNTRIES
 
 def generate_plots(form_data):
     bass_plots = {}
@@ -74,7 +75,12 @@ def generate_plots(form_data):
 
 def index(request):
     form = WindForm()
-    return render(request, 'main/index.html', {'form': form})
+    # Передаем словарь регионов и стран в шаблон
+    context = {
+        'form': form,
+        'regions_countries': json.dumps(REGIONS_COUNTRIES)
+    }
+    return render(request, 'main/index.html', context)
 
 def process_form(request):
     if request.method == 'POST':
