@@ -24,13 +24,13 @@
     </style>
 </head>
 <body>
-    <h1>Результаты</h1>
+    <h1>Графики исследования</h1>
     <p>Страна: {{ form_data.country }}</p>
     <p>Модели: {{ form_data.models }}</p>
-    <p>Предсказание: {{ form_data.prediction }}</p>
+    <p>Предсказание на {{ form_data.prediction }} лет/года</p>
 
     {% if bass_plots %}
-    <h2>Bass Models</h2>
+    <h2>Bass Модели</h2>
     <div class="plot-row">
         {% for plot_name, plot_html in bass_plots.items %}
             <div class="plot-item">
@@ -42,7 +42,7 @@
     {% endif %}
 
     {% if logic_plots %}
-    <h2>Logic Models</h2>
+    <h2>Logic Модели</h2>
     <div class="plot-row">
         {% for plot_name, plot_html in logic_plots.items %}
             <div class="plot-item">
@@ -54,7 +54,7 @@
     {% endif %}
 
     {% if gompertz_plots %}
-    <h2>Gompertz Models</h2>
+    <h2>Gompertz Модели</h2>
     <div class="plot-row">
         {% for plot_name, plot_html in gompertz_plots.items %}
             <div class="plot-item">

@@ -44,37 +44,15 @@ def analyze_data(country, prognos, step, model, metod):
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values
         else:
             predicted_data = new_df[filtered_columns_wind].astype(float)
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
             predicted_values = [i for i in new_df[year_full].astype(float).values[0] if i != None]
-            result_dict[country][year_full[-1]] = year_full_int, predicted_values #, rmse, mae
+            result_dict[country][year_full[-1]] = year_full_int, predicted_values
     return result_dict
 
-
-
-def export_tables_to_excel(db_name):
-    # Подключение к базе данных
-    conn = sqlite3.connect(db_name)
-    cursor = conn.cursor()
-
-    # Получение списка таблиц в базе данных
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cursor.fetchall()
-
-    # Перебор каждой таблицы и сохранение в файл Excel
-    for table in tables:
-        table_name = table[0]
-        query = f"SELECT * FROM {table_name}"
-        df = pd.read_sql_query(query, conn)
-        df = df.astype(float)
-        df.to_excel(f"{table_name}.xlsx", index=False)
-        print(f"Таблица {table_name} успешно экспортирована в {table_name}.xlsx")
-
-    # Закрытие соединения
-    conn.close()
 
 if __name__ == '__main__':
     # Пример использования функции
