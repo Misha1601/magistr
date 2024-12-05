@@ -12,8 +12,6 @@ import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
-from Functions import linear_regression_extension
-
 
 def Bass1(x: float, P: float, Q: float, M: float) -> float:
     """
@@ -263,6 +261,20 @@ def squareMistakeGompertz3(k: tuple, sales, total, costs) -> float:
         p = Gompertz3(z, k[0], k[1], k[2])  # Новый Prognose Sales
         res += (p - sales[i])**2  # Добавляем
     return res
+
+def linear_regression_extension(original_array, n):
+    """
+    Продолжает массив на n элементов используя линейную аппроксимацию.
+    Parameters:
+    - original_array: Исходный массив
+    - n: Количество новых элементов
+    Returns:
+    - Массив предсказанных значений
+    """
+    x = np.arange(len(original_array))
+    coeffs = np.polyfit(x, original_array, 1)  # 1 - степень полинома (линейная)
+    new_x = np.arange(len(original_array), len(original_array) + n)
+    return np.polyval(coeffs, new_x)
 
 def execute_sql_query(sql_query, params=None):
     """
@@ -851,7 +863,7 @@ if __name__ == '__main__':
 
     # execute_sql_query('DELETE FROM results;')
     for i in models:
-        func_minus_year('Canada', 30, 5, i, metods[0])
+        func_minus_year('Canada', 3, 3, i, metods[0])
 
 
     end_time2 = time.time()
