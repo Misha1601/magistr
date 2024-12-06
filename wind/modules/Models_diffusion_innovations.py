@@ -1,5 +1,4 @@
 import os
-from pprint import pprint
 from matplotlib import pyplot
 import json
 import pandas as pd
@@ -363,12 +362,6 @@ def func_dif_innov(data, finalYear: int, model_func, metod: str):
     k0 = (popt[0], popt[1], popt[2])  # Начальные значения параметров
     kb = ((0, None), (0, None), (0, None))  # Все параметры неотрицательные
 
-
-    # total_time = time.time() - end_time
-    # print(f'Время между приближёнными и минимизацией: {total_time} seconds')
-    # end_time = time.time()
-
-
     # Минимизируем сумму квадратов
     match model_func.__name__:
         case 'Bass1':
@@ -473,10 +466,8 @@ def func_dif_innov_0_parametr(data, p0, p1, p2, model_func, metod: str):
     finalYear = list(data.year)[-1]  # Задаем Конечный год
     prSales = [data.generate[0]]  # Задаем начальный Prognose Sales
     prCumul = [data.generate[0]]  # Задаем начальный Prognose Cumulative
-    # print(prCumul)
     ind_tgen = 1
     sum_prSales = data.generate[0]
-    # print(sum_prSales)
     m = np.array(data.total)
     c = np.array(data.costs)
 
@@ -545,9 +536,7 @@ def func_minus_year(country, numberP, numberS, model, metod):
     """
     # проверяем что такие данные уже есть, если есть, выходим
     select_results = f'SELECT * FROM results WHERE Country="{country}" AND prognos="{numberP}" AND step="{numberS}" AND model="{model.__name__}"'
-    # print(select_results)
     data_results = execute_sql_query(select_results)
-    # print(data_results)
     if data_results:
         return None
 
@@ -555,24 +544,16 @@ def func_minus_year(country, numberP, numberS, model, metod):
 
     select_year = f"PRAGMA table_info(Wind)"
     data_year = [column[1] for column in execute_sql_query(select_year)]
-    # print(data_year)
 
     select_total = f'SELECT * FROM Wind WHERE Country="Total {country}"'
-    # print(select_total)
     data_total = execute_sql_query(select_total)[0]
-    # print(data_total)
 
     select_costs = f'SELECT * FROM Wind WHERE Country="Costs"'
-    # print(select_costs)
     data_costs = execute_sql_query(select_costs)[0]
-    # print(data_costs[2:])
 
     country = country
-    # country  = 'World'
     select_country = f'SELECT * FROM Wind WHERE Country="{country}"'
-    # print(select_country)
     data_country = execute_sql_query(select_country)[0]
-    # print(data_country)
 
     data_generate = {'year': [int(i) for i in data_year[2:]],
                      'generate': data_country[2:],
@@ -599,7 +580,6 @@ def func_minus_year(country, numberP, numberS, model, metod):
     numberStep = numberS
     # данные с предсказанием на указанный год
     finalYear = list(data.year)[-1] + numberP
-    # print(data)
     result1 = func_dif_innov(data, finalYear, model, metod)
     if result1 == None:
         return None
@@ -623,15 +603,11 @@ def func_minus_year(country, numberP, numberS, model, metod):
     # добаляем данные без предсказания
     # проверяем что такие данные уже есть, если есть не добавляем
     select_results0 = f'SELECT * FROM results WHERE Country="{country}" AND prognos="0" AND step="0" AND model="{model.__name__}"'
-    # print(select_results0)
     data_results0 = execute_sql_query(select_results0)
-    # print(data_results0)
     if not data_results0:
         p0, p1, p2 = result1[-2]
-        # print(p0, p1, p2)
         result0 = func_dif_innov_0_parametr(data, p0, p1, p2, model, metod)
         # подготовим информацию для вставки в БД
-        # columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0']
         columns = ['country', 'prognos', 'step', 'model', 'metod', 'param', 'param0', 'year_test', 'data_origin', 'data_prognos', 'otclonenie', 'otclonenie_procent', 'MAE', 'MAE_pribl', 'MAE_procent']
         line = [country, '0', '0', model.__name__, metod, '-', result1[-1]]
         line.append('-') # year_test
@@ -651,7 +627,6 @@ def func_minus_year(country, numberP, numberS, model, metod):
         columns_str = ', '.join(f"'{col}'" for col in columns)
         placeholders = ', '.join(f"'{i}'" for i in line)
         insert0 = f'INSERT INTO results ({columns_str}) VALUES ({placeholders})'
-        # print(insert0)
         execute_sql_query(insert0)
     else:
         # Извлечение данных
@@ -674,9 +649,7 @@ def func_minus_year(country, numberP, numberS, model, metod):
         numberS1 = 5
         # проверяем что такие данные уже есть, если есть, выходим
         select_results = f'SELECT * FROM results WHERE Country="{country}" AND prognos="{numberP1}" AND step="{numberS1}" AND model="{model.__name__}"'
-        # print(select_results)
         data_results = execute_sql_query(select_results)
-        # print(data_results)
         if data_results:
             return None
     else:
@@ -691,9 +664,7 @@ def func_minus_year(country, numberP, numberS, model, metod):
         data1 = data[:-numberStep]
         if list(data1.year)[-1] <= 2001:
             break
-        # print(list(data1.year)[-1])
         finalYear = list(data1.year)[-1] + numberP1
-        # print(list(data1.year)[-1], finalYear)
         result2 = func_dif_innov(data1, finalYear, model, metod)
         if result2:
             line.append(result2[-2]) # param
@@ -736,12 +707,6 @@ def func_minus_year(country, numberP, numberS, model, metod):
         else:
             break
         numberStep += numberS1
-        # print(numberStep)
-    # pprint(results)
-
-    # pyplot.title(f'Данные для {country}, модель {model.__name__}, шаг измерения - {numberS}, предсказывает на {numberP} лет')
-    # pyplot.legend()  # Отображаем имена данных
-    # pyplot.show()  # Отображаем график
 
 def analyze_data(country, prognos, step, model, metod):
     """Функция для анализа данных"""
@@ -780,7 +745,6 @@ def analyze_data(country, prognos, step, model, metod):
         new_df = row.to_frame().T
 
         if year_end > int(filtered_columns_wind[-1]):
-            # print(year_end)
             predicted_data = new_df[filtered_columns_wind].astype(float)
             year_full = [col for col in new_df.columns if col.isdigit() and len(col) == 4 and int(col)<=int(row.last_valid_index())]
             year_full_int = [int(i) for i in year_full]
@@ -792,17 +756,13 @@ def analyze_data(country, prognos, step, model, metod):
                 mae = np.mean(np.abs(np.array(original_values[:len(predicted_values)]) - np.array(predicted_values)))
                 # Метрика суммы квадратов остатков, Результат должен быть наименьшим.
                 squared = np.square(np.subtract(original_values[:len(predicted_values)], predicted_values))
-                # print(squared)
             else:
                 # Среднеквадратичное отклонение (RMSE)
-                # print(original_values)
-                # print(predicted_values[:len(predicted_values)])
                 rmse = np.sqrt(np.mean((np.array(original_values) - np.array(predicted_values[:len(original_values)]))**2))
                 # Средняя абсолютная ошибка (MAE)
                 mae = np.mean(np.abs(np.array(original_values) - np.array(predicted_values[:len(original_values)])))
                 # Метрика суммы квадратов остатков, Результат должен быть наименьшим.
                 squared = np.square(np.subtract(original_values, predicted_values[:len(original_values)]))
-                # print(squared)
             result_dict[country][prognos][step][model][metod][year_full[-1]] = year_full_int, predicted_values, rmse, mae, sum(squared)
         else:
             predicted_data = new_df[filtered_columns_wind].astype(float)
@@ -835,7 +795,6 @@ if __name__ == '__main__':
 
     select_all_country = f'SELECT DISTINCT "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
     data_all_country = [column[0] for column in execute_sql_query(select_all_country)]
-    # print(data_all_country)
 
     select_all_region_country = f'SELECT DISTINCT "Region", "Country" FROM Wind WHERE "Region" != "-" AND "Country" NOT LIKE "%Total%"'
     region = {}

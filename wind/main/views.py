@@ -23,6 +23,7 @@ def generate_plots(form_data):
     prediction = form_data['prediction']
     if prediction == '6':  # Если выбрано Other
         prediction = form_data['custom_prediction']
+        form_data['prediction'] = form_data['custom_prediction']
 
     models_dict = {
         'bass_models': ['Bass1', 'Bass2', 'Bass3'],
@@ -47,8 +48,6 @@ def generate_plots(form_data):
                     model1 = i
                     break
             func_minus_year(country, int(prognos), int(step), model1, metod)
-            # Принудительно закрываем все соединения и создаем новое
-            execute_sql_query("PRAGMA optimize", [])  # Оптимизация БД
             # Повторно запрашиваем данные
             results_data = execute_sql_query(query_results, [country, prognos, model, metod])
 
@@ -77,7 +76,6 @@ def generate_plots(form_data):
 
                 # Пропускаем первые столбцы с метаданными
                 for i, value in enumerate(row[16:]):  # Пропускаем первые 15 колонок с метаданными
-                    # print(row[15:])
                     try:
                         float_value = float(value)
                         years_data.append(original_years[0] + i)
@@ -87,7 +85,6 @@ def generate_plots(form_data):
 
                 if years_data:
                     result_dict[country][str(years_data[-1])] = (years_data, values_data)
-        # print(result_dict)
         return result_dict
 
     # Генерация графиков для каждой модели
@@ -237,7 +234,6 @@ def export_bd_excel(request):
     try:
         # Путь к базе данных Wind.db
         db_path = os.path.join(settings.BASE_DIR, 'modules', 'Wind.db')
-        print(os.path.dirname(__file__))
 
         # Подключение к БД и Получаем данные из таблиц
         conn = sqlite3.connect(db_path)
