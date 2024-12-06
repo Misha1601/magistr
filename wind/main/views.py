@@ -2,6 +2,9 @@ import json
 import plotly.graph_objs as go
 import plotly.offline as pio
 import numpy as np
+import io
+import openpyxl
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import WindForm, REGIONS_COUNTRIES
 from modules.Models_diffusion_innovations import execute_sql_query, func_minus_year, Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3
@@ -163,3 +166,62 @@ def plot_view(request):
         'gompertz_plots': gompertz_plot_html,
         'form_data': form_data
     })
+
+def export_excel(request):
+    # Получаем данные формы из сессии
+    form_data = request.session.get('form_data')
+    if not form_data:
+        return redirect('index')
+
+    # Генерируем данные графиков
+    bass_plots, logic_plots, gompertz_plots = generate_plots(form_data)
+
+    # Собираем все модели в один словарь
+    all_plots = {}
+    all_plots.update(bass_plots)
+    all_plots.update(logic_plots)
+    all_plots.update(gompertz_plots)
+
+    # Собираем все годы из всех трасс
+    all_years = set()
+    for model_name, plot_data in all_plots.items():
+        for trace in plot_data:
+            all_years.update(trace['x'])
+
+    all_years = sorted(all_years)
+
+    # Создаем Excel файл
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Data"
+
+    # Заголовки: теперь вместо "Name" будет два столбца "Модель" и "Предсказания"
+    header = ["Модель", "Предсказания"] + [str(year) for year in all_years]
+    ws.append(header)
+
+    # Заполняем данные
+    for model_name, plot_data in all_plots.items():
+        for trace in plot_data:
+            # Формируем имя ряда
+            model_col = model_name
+            prediction_col = trace['name']
+
+            # Сопоставляем год -> значение
+            year_value_map = {y: val for y, val in zip(trace['x'], trace['y'])}
+
+            # Строим итоговую строку
+            row = [model_col, prediction_col]
+            for year in all_years:
+                val = year_value_map.get(year, None)
+                row.append(val)
+
+            ws.append(row)
+
+    # Сохраняем и возвращаем файл
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+    return response

@@ -28,6 +28,10 @@
     <p>Страна: {{ form_data.country }}</p>
     <p>Модели: {{ form_data.models }}</p>
     <p>Предсказание на {{ form_data.custom_prediction }} лет/года</p>
+    <form action="{% url 'export_excel' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Экспорт в Excel файл</button>
+    </form>
 
     {% if bass_plots %}
     <h2>Bass Модели</h2>
