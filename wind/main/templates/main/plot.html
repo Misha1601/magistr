@@ -30,7 +30,7 @@
     <p>Предсказание на {{ form_data.custom_prediction }} лет/года</p>
     <form action="{% url 'export_excel' %}" method="post">
         {% csrf_token %}
-        <button type="submit">Экспорт в Excel файл</button>
+        <button type="submit">Экспорт данных графиков в Excel</button>
     </form>
 
     {% if bass_plots %}
@@ -68,5 +68,10 @@
         {% endfor %}
     </div>
     {% endif %}
+
+    <form action="{% url 'export_bd_excel' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Экспорт данных БД в Excel</button>
+    </form>
 </body>
 </html>

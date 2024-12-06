@@ -746,7 +746,8 @@ def func_minus_year(country, numberP, numberS, model, metod):
 def analyze_data(country, prognos, step, model, metod):
     """Функция для анализа данных"""
     # Извлечение данных
-    conn = sqlite3.connect('Wind.db')
+    db_path = os.path.join(os.path.dirname(__file__), 'Wind.db')
+    conn = sqlite3.connect(db_path)
     query = f"SELECT * FROM Wind WHERE Country = ?"
     wind_data = pd.read_sql_query(query, conn, params=[country])
     query_p = f"SELECT * FROM results WHERE country = ? AND prognos = ? AND step = ? AND model = ? AND metod = ?"

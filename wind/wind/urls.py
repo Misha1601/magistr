@@ -8,4 +8,5 @@ urlpatterns = [
     path('process/', views.process_form, name='process_form'),
     path('plots/', views.plot_view, name='plot_view'),
     path('export_excel/', views.export_excel, name='export_excel'),
+    path('export_bd_excel/', views.export_bd_excel, name='export_bd_excel'),
 ]

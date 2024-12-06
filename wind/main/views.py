@@ -2,10 +2,14 @@ import json
 import plotly.graph_objs as go
 import plotly.offline as pio
 import numpy as np
+import pandas as pd
+import os
+import sqlite3
 import io
 import openpyxl
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.conf import settings
 from .forms import WindForm, REGIONS_COUNTRIES
 from modules.Models_diffusion_innovations import execute_sql_query, func_minus_year, Bass1, Bass2, Bass3, Logic1, Logic2, Logic3, Gompertz1, Gompertz2, Gompertz3
 
@@ -225,3 +229,48 @@ def export_excel(request):
     response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
     return response
+
+def export_bd_excel(request):
+    if request.method != 'POST':
+        return redirect('plot_view')
+
+    try:
+        # Путь к базе данных Wind.db
+        db_path = os.path.join(settings.BASE_DIR, 'modules', 'Wind.db')
+        print(os.path.dirname(__file__))
+
+        # Подключение к БД и Получаем данные из таблиц
+        conn = sqlite3.connect(db_path)
+        wind_df = pd.read_sql_query("SELECT * FROM Wind", conn)
+        results_df = pd.read_sql_query("SELECT * FROM results", conn)
+        conn.close()
+
+        # Переименовываем колонку Country в таблице Wind для соответствия с results
+        wind_df = wind_df.rename(columns={'Country': 'country'})
+
+        # Объединяем DataFrame вертикально
+        merged_df = pd.concat([results_df, wind_df], axis=0)
+
+        # Заменяем первый столбец последним
+        merged_df = merged_df[[merged_df.columns[-1]] + merged_df.columns.tolist()[1:-1]]
+
+        # Преобразование всех строк в числовой формат
+        for column in merged_df.columns:
+            # Попытка преобразования значений в числовой формат
+            numeric_values = pd.to_numeric(merged_df[column], errors='coerce')
+            # Замена значений только там, где преобразование удалось
+            merged_df[column] = merged_df[column].where(numeric_values.isna(), numeric_values)
+
+        # Создание Excel файла в памяти
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            merged_df.to_excel(writer, index=False, sheet_name='MergedData')
+
+        # Возвращение файла в ответе
+        output.seek(0)
+        response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="Wind_Results_Merged.xlsx"'
+        return response
+
+    except Exception as e:
+        return HttpResponse(f"Произошла ошибка при экспорте данных: {str(e)}", status=500)
