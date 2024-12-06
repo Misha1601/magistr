@@ -655,7 +655,8 @@ def func_minus_year(country, numberP, numberS, model, metod):
         execute_sql_query(insert0)
     else:
         # Извлечение данных
-        conn = sqlite3.connect('Wind.db')
+        db_path = os.path.join(os.path.dirname(__file__), 'Wind.db')
+        conn = sqlite3.connect(db_path)
         result0 = pd.read_sql_query(select_results0, conn)
         conn.close()
         # Фильтруем столбцы, которые являются годами

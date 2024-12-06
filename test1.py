@@ -63,8 +63,6 @@ if __name__ == '__main__':
         strana = analyze_data(name_strana, p, '-', k, 'Nelder-Mead')
         # print(strana)
 
-        # export_tables_to_excel('Wind.db')
-
         plt.figure(figsize=(10, 6))
         for i in strana[name_strana].keys():
             if i == 'origen':
