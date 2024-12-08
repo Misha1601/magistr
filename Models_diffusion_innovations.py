@@ -872,10 +872,11 @@ if __name__ == '__main__':
 
     # execute_sql_query('DELETE FROM results;')
     for i in models:
-    #     for k in data_all_country:
-    #         func_minus_year(k, 5, 5, i, metods[0])
+        for k in data_all_country:
+            print(k, i)
+            # func_minus_year(k, 5, 5, i, metods[0])
 
-        func_minus_year('Canada', 30, 5, i, metods[0])
+        # func_minus_year('Canada', 30, 5, i, metods[0])
 
 
     end_time2 = time.time()

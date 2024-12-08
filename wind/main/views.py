@@ -159,6 +159,37 @@ def plot_view(request):
                     name=curve['name'],
                     visible=curve['visible']
                 ))
+            # Добавляем настройки осей и общего вида графика
+            fig.update_layout(
+                xaxis_title="Года",  # Подпись оси X
+                yaxis_title="TWh",   # Подпись оси Y
+                xaxis=dict(
+                    title_standoff=10,  # Отступ подписи оси X
+                    title_font=dict(size=14),  # Размер шрифта подписи
+                    # Настройки делений оси X
+                    dtick=2,  # Шаг делений по годам (каждые 2 года)
+                    tickangle=45,  # Поворот подписей для лучшей читаемости
+                    gridwidth=1,  # Толщина сетки
+                    gridcolor='lightgrey'  # Цвет сетки
+                ),
+                yaxis=dict(
+                    title_standoff=10,  # Отступ подписи оси Y
+                    title_font=dict(size=14),  # Размер шрифта подписи
+                    title_text="TWh",  # Текст подписи
+                    # Поворот подписи оси Y на 90 градусов
+                    title=dict(
+                        text="TWh",
+                        standoff=20,
+                        font=dict(size=14)
+                    ),
+                    # Настройки делений оси Y
+                    # dtick='auto',  # Автоматический шаг
+                    nticks=10,     # Примерное количество делений
+                    gridwidth=1,   # Толщина сетки
+                    gridcolor='lightgrey'  # Цвет сетки
+                ),
+                margin=dict(t=10)  # Уменьшаем верхний отступ
+            )
             html_dict[plot_name] = pio.plot(fig, output_type='div')
 
     return render(request, 'main/plot.html', {
