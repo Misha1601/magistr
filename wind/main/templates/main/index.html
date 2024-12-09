@@ -31,6 +31,34 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const regionSelect = document.querySelector('.region-select');
+        const countrySelect = document.querySelector('.country-select');
+        const regionsCountries = {{ regions_countries|safe }};
+
+        // Функция обновления списка стран
+        function updateCountries(region) {
+            // Очищаем текущий список стран
+            countrySelect.innerHTML = '';
+
+            // Получаем список стран для выбранного региона
+            const countries = regionsCountries[region] || [];
+
+            // Добавляем новые опции
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.textContent = country;
+                countrySelect.appendChild(option);
+            });
+        }
+
+        // Обработчик изменения региона
+        regionSelect.addEventListener('change', function() {
+            updateCountries(this.value);
+        });
+
+        // Инициализация списка стран при загрузке страницы
+        updateCountries(regionSelect.value);
         const predictionRadios = document.querySelectorAll('input[name="prediction"]');
         const customPredictionInput = document.querySelector('input[name="custom_prediction"]');
         const otherRadio = document.querySelector('input[value="6"]');

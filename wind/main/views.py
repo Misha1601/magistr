@@ -163,6 +163,14 @@ def plot_view(request):
             fig.update_layout(
                 xaxis_title="Года",  # Подпись оси X
                 yaxis_title="TWh",   # Подпись оси Y
+                # Настройки легенды
+                legend=dict(
+                    orientation="h",  # горизонтальная ориентация
+                    yanchor="bottom",  # привязка к низу
+                    y=1.02,           # положение над графиком
+                    xanchor="left",   # привязка к левому краю
+                    x=0,             # начало с левого края
+                ),
                 xaxis=dict(
                     title_standoff=10,  # Отступ подписи оси X
                     title_font=dict(size=14),  # Размер шрифта подписи
@@ -183,12 +191,12 @@ def plot_view(request):
                         font=dict(size=14)
                     ),
                     # Настройки делений оси Y
-                    # dtick='auto',  # Автоматический шаг
                     nticks=10,     # Примерное количество делений
                     gridwidth=1,   # Толщина сетки
                     gridcolor='lightgrey'  # Цвет сетки
                 ),
-                margin=dict(t=10)  # Уменьшаем верхний отступ
+                # Увеличиваем верхний отступ для легенды
+                margin=dict(t=50)
             )
             html_dict[plot_name] = pio.plot(fig, output_type='div')
 
