@@ -10,12 +10,6 @@
             max-width: 1600px;
             margin: 0 auto;
         }
-        .plot-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
         .plot-item {
             border: 1px solid #ddd;
             padding: 10px;
@@ -28,46 +22,41 @@
     <p>Страна: {{ form_data.country }}</p>
     <p>Модели: {{ form_data.models }}</p>
     <p>Предсказание на {{ form_data.prediction }} лет/года</p>
+
     <form action="{% url 'export_excel' %}" method="post">
         {% csrf_token %}
         <button type="submit">Экспорт данных графиков в Excel</button>
     </form>
 
-    {% if bass_plots %}
-    <h2>Bass Модели</h2>
-    <div class="plot-row">
-        {% for plot_name, plot_html in bass_plots.items %}
-            <div class="plot-item">
-                <h3>{{ plot_name }}</h3>
-                {{ plot_html|safe }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+    <h2>Все модели</h2>
+    <div class="plot-grid">
+        {% if bass_plots %}
+            {% for plot_name, plot_html in bass_plots.items %}
+                <div class="plot-item">
+                    <h3>{{ plot_name }}</h3>
+                    {{ plot_html|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    {% if logic_plots %}
-    <h2>Logic Модели</h2>
-    <div class="plot-row">
-        {% for plot_name, plot_html in logic_plots.items %}
-            <div class="plot-item">
-                <h3>{{ plot_name }}</h3>
-                {{ plot_html|safe }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+        {% if logic_plots %}
+            {% for plot_name, plot_html in logic_plots.items %}
+                <div class="plot-item">
+                    <h3>{{ plot_name }}</h3>
+                    {{ plot_html|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    {% if gompertz_plots %}
-    <h2>Gompertz Модели</h2>
-    <div class="plot-row">
-        {% for plot_name, plot_html in gompertz_plots.items %}
-            <div class="plot-item">
-                <h3>{{ plot_name }}</h3>
-                {{ plot_html|safe }}
-            </div>
-        {% endfor %}
+        {% if gompertz_plots %}
+            {% for plot_name, plot_html in gompertz_plots.items %}
+                <div class="plot-item">
+                    <h3>{{ plot_name }}</h3>
+                    {{ plot_html|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-    {% endif %}
 
     <form action="{% url 'export_bd_excel' %}" method="post">
         {% csrf_token %}
