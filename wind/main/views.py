@@ -65,7 +65,7 @@ def generate_plots(form_data):
         original_years = [int(year) for year in years_columns]
         original_values = [float(val) for val in wind_data[0][2:] if val != '-']
 
-        result_dict = {country: {'origen': (original_years, original_values)}}
+        result_dict = {country: {'origen': (original_years, original_values, ['-', '-'])}}
 
         # Обработка результатов прогноза
         if results_data:
@@ -73,6 +73,7 @@ def generate_plots(form_data):
                 # Фильтруем годы из результатов
                 years_data = []
                 values_data = []
+                otcl_and_mae = []
 
                 # Пропускаем первые столбцы с метаданными
                 for i, value in enumerate(row[16:]):  # Пропускаем первые 15 колонок с метаданными
@@ -82,9 +83,11 @@ def generate_plots(form_data):
                         values_data.append(float_value)
                     except (ValueError, TypeError):
                         continue
+                otcl_and_mae.append(round(float(row[12]), 2) if row[12] != '-' else '-')
+                otcl_and_mae.append(round(float(row[13]), 2) if row[13] != '-' else '-')
 
                 if years_data:
-                    result_dict[country][str(years_data[-1])] = (years_data, values_data)
+                    result_dict[country][str(years_data[-1])] = (years_data, values_data, otcl_and_mae)
         return result_dict
 
     # Генерация графиков для каждой модели
@@ -97,7 +100,7 @@ def generate_plots(form_data):
             trace = {
                 'x': values[0],  # года
                 'y': values[1],  # значения
-                'name': 'Оригинальные данные' if key == 'origen' else f'Предсказание до {key}',
+                'name': 'Оригинальные данные' if key == 'origen' else f'Тест {int(key) - int(prediction)}, Предск. {key}, Откл. {values[2][0]}%, MAE {values[2][1]}',
                 'visible': True
             }
             traces.append(trace)
