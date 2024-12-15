@@ -15,4 +15,7 @@ df2 = pd.DataFrame({
 result = pd.concat([df1, df2], axis=0)
 print(result)
 
-
+qqq = {}
+key = 'origen2'
+qqq['name'] = 'Оригинальные данные' if key == 'origen' else ('origen1' if key == 'origen1' else 'origen2')
+print(qqq)

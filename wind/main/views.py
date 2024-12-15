@@ -38,7 +38,7 @@ def generate_plots(form_data):
         wind_data = execute_sql_query(query_wind, [country])
 
         # Получаем данные из results
-        query_results = 'SELECT * FROM results WHERE Country=? AND prognos=? AND model=? AND metod=?'
+        query_results = 'SELECT * FROM results WHERE Country=? AND (prognos=? OR prognos="0") AND model=? AND metod=?'
         results_data = execute_sql_query(query_results, [country, prognos, model, metod])
 
         # Если данных нет в results, вызываем func_minus_year
@@ -53,7 +53,7 @@ def generate_plots(form_data):
 
         # Обновляем запрос если prognos больше 5
         if int(prognos) > 5:
-            query_results = 'SELECT * FROM results WHERE Country=? AND (prognos=? OR prognos="5") AND model=? AND metod=? ORDER BY prognos ASC'
+            query_results = 'SELECT * FROM results WHERE Country=? AND (prognos=? OR prognos="5" OR prognos="0") AND model=? AND metod=? ORDER BY prognos ASC'
             results_data = execute_sql_query(query_results, [country, prognos, model, metod])
 
         # Получаем список годов из структуры таблицы
@@ -87,7 +87,7 @@ def generate_plots(form_data):
                 otcl_and_mae.append(round(float(row[13]), 2) if row[13] != '-' else '-')
 
                 if years_data:
-                    result_dict[country][str(years_data[-1])] = (years_data, values_data, otcl_and_mae)
+                    result_dict[country][str(row[8])] = (years_data, values_data, otcl_and_mae)
         return result_dict
 
     # Генерация графиков для каждой модели
@@ -100,7 +100,7 @@ def generate_plots(form_data):
             trace = {
                 'x': values[0],  # года
                 'y': values[1],  # значения
-                'name': 'Оригинальные данные' if key == 'origen' else f'Тест {int(key) - int(prediction)}, Предск. {key}, Откл. {values[2][0]}%, MAE {values[2][1]}',
+                'name': 'Оригинальные данные' if key == 'origen' else ('Без предсказания' if key == '-' else f'Тест {int(key)}, Предск. {int(key) + int(prediction)}, Откл. {values[2][0]}%, MAE {values[2][1]}'),
                 'visible': True
             }
             traces.append(trace)
